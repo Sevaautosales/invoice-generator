@@ -1,14 +1,26 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import { formatCurrency } from '@/lib/utils';
 import { numberToWords } from '@/lib/numberToWords';
+
+// Register Inter font
+Font.register({
+    family: 'Inter',
+    fonts: [
+        { src: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.ttf', fontWeight: 400 },
+        { src: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.ttf', fontWeight: 700 },
+        { src: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-900-normal.ttf', fontWeight: 900 },
+        { src: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-italic.ttf', fontStyle: 'italic', fontWeight: 400 },
+        { src: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-italic.ttf', fontStyle: 'italic', fontWeight: 700 },
+    ]
+});
 
 // Define styles
 const styles = StyleSheet.create({
     page: {
         padding: 40,
         fontSize: 10,
-        fontFamily: 'Helvetica',
+        fontFamily: 'Inter',
         color: '#111827',
         backgroundColor: '#FFFFFF',
     },
@@ -23,13 +35,13 @@ const styles = StyleSheet.create({
     labelInvoice: {
         color: '#0EA5E9',
         fontSize: 18,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         letterSpacing: 2
     },
     labelRecipient: {
         fontSize: 7.5,
         color: '#9ca3af',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 700,
         letterSpacing: 1.5
     },
     brandingRow: {
@@ -53,7 +65,7 @@ const styles = StyleSheet.create({
     },
     companyName: {
         fontSize: 27,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         color: '#1a1a1a',
         marginBottom: 0
@@ -61,7 +73,7 @@ const styles = StyleSheet.create({
     companyTagline: {
         fontSize: 7,
         color: '#9ca3af',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 700,
         textTransform: 'uppercase',
         letterSpacing: 1.5,
         marginTop: 2
@@ -72,21 +84,21 @@ const styles = StyleSheet.create({
         lineHeight: 1.4,
         marginTop: 8,
         textTransform: 'uppercase',
-        fontFamily: 'Helvetica-Bold'
+        fontWeight: 700
     },
     contactSection: {
         textAlign: 'right'
     },
     contactText: {
         fontSize: 10.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#1a1a1a',
         marginBottom: 2
     },
     estLabel: {
         fontSize: 8,
         color: '#d1d5db',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 3,
         textAlign: 'right',
@@ -115,14 +127,14 @@ const styles = StyleSheet.create({
     infoLabel: {
         fontSize: 7.5,
         color: '#9ca3af',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 1.5,
-        marginBottom: 3
+        marginBottom: 4
     },
     infoValue: {
         fontSize: 10.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#000000'
     },
     carDetails: {
@@ -134,7 +146,7 @@ const styles = StyleSheet.create({
     },
     carHeader: {
         fontSize: 8.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         marginBottom: 8,
         color: '#111827',
         letterSpacing: 2
@@ -146,22 +158,22 @@ const styles = StyleSheet.create({
     carItem: {
         fontSize: 8.5,
         color: '#4b5563',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 700,
         marginBottom: 3,
         textTransform: 'uppercase'
     },
     carBoldValue: {
         color: '#000',
-        fontFamily: 'Helvetica-Bold'
+        fontWeight: 900
     },
     tableHeader: {
         flexDirection: 'row',
         marginHorizontal: 15,
         borderBottom: 2,
         borderColor: '#000',
-        paddingBottom: 5,
+        paddingBottom: 6,
         marginBottom: 0,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         fontSize: 8.5,
         letterSpacing: 1.5,
         textTransform: 'uppercase'
@@ -180,13 +192,13 @@ const styles = StyleSheet.create({
     },
     rowNo: {
         fontSize: 10,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#d1d5db',
         width: '8.33%'
     },
     itemTitle: {
         fontSize: 10.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         color: '#000',
         lineHeight: 1.2
@@ -195,20 +207,20 @@ const styles = StyleSheet.create({
         fontSize: 7.5,
         color: '#9ca3af',
         marginTop: 4,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 700,
         textTransform: 'uppercase',
         opacity: 0.7
     },
     rowPrice: {
         fontSize: 11.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#111827',
         textAlign: 'right',
         width: '25%'
     },
     rowAmount: {
         fontSize: 11.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#000',
         textAlign: 'right',
         width: '25%'
@@ -231,21 +243,21 @@ const styles = StyleSheet.create({
     },
     totalLabel: {
         fontSize: 10.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         color: '#9ca3af',
         letterSpacing: 1.5
     },
     totalValue: {
         fontSize: 22,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#000',
         letterSpacing: -1
     },
     amountWordsHeader: {
         fontSize: 7.5,
         color: '#9ca3af',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         textAlign: 'right',
         letterSpacing: 1,
@@ -253,8 +265,9 @@ const styles = StyleSheet.create({
     },
     amountWords: {
         fontSize: 8.5,
-        fontFamily: 'Helvetica-BoldOblique',
+        fontWeight: 900,
         textAlign: 'right',
+        fontStyle: 'italic',
         color: '#111827',
         width: 300
     },
@@ -285,7 +298,7 @@ const styles = StyleSheet.create({
     },
     termsHeader: {
         fontSize: 7.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         marginBottom: 6,
         textTransform: 'uppercase',
         color: '#111827',
@@ -297,14 +310,14 @@ const styles = StyleSheet.create({
     },
     termIdx: {
         fontSize: 6.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         color: '#d1d5db',
         width: 10
     },
     termText: {
         fontSize: 6.5,
         color: '#6b7280',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 700,
         textTransform: 'uppercase'
     },
     authSection: {
@@ -314,7 +327,7 @@ const styles = StyleSheet.create({
     },
     authLabel: {
         fontSize: 9.5,
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         marginBottom: 35,
         textTransform: 'uppercase',
         color: '#111827'
@@ -327,7 +340,7 @@ const styles = StyleSheet.create({
     authSub: {
         fontSize: 7.5,
         color: '#9ca3af',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 700,
         marginTop: 6,
         textTransform: 'uppercase',
         letterSpacing: 1.5
@@ -344,7 +357,7 @@ const styles = StyleSheet.create({
     footerText: {
         fontSize: 7.5,
         color: '#d1d5db',
-        fontFamily: 'Helvetica-Bold',
+        fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 1.5
     },
@@ -413,7 +426,7 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                         <View>
                             <Text style={styles.infoLabel}>Customer Details:</Text>
                             <Text style={styles.infoValue}>{data.customer_name}</Text>
-                            <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#4b5563', marginTop: 3 }}>Ph: {data.customer_phone}</Text>
+                            <Text style={{ fontSize: 8, fontWeight: 700, color: '#4b5563', marginTop: 3 }}>Ph: {data.customer_phone}</Text>
                         </View>
                     </View>
                     <View style={[styles.infoCol, styles.infoColBorder]}>
@@ -423,8 +436,8 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                         </View>
                         <View>
                             <Text style={styles.infoLabel}>Billing Address:</Text>
-                            <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#4b5563', lineHeight: 1.2 }}>{data.billing_address}</Text>
-                            <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#4b5563', marginTop: 2 }}>{data.customer_address}</Text>
+                            <Text style={{ fontSize: 8, fontWeight: 700, color: '#4b5563', lineHeight: 1.2 }}>{data.billing_address}</Text>
+                            <Text style={{ fontSize: 8, fontWeight: 700, color: '#4b5563', marginTop: 2 }}>{data.customer_address}</Text>
                         </View>
                     </View>
                 </View>
@@ -486,7 +499,7 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                         {data.notes ? (
                             <View style={styles.notesBox}>
                                 <Text style={[styles.infoLabel, { color: '#0EA5E9', marginBottom: 2 }]}>Notes:</Text>
-                                <Text style={{ fontSize: 8, fontFamily: 'Helvetica-BoldOblique' }}>{data.notes}</Text>
+                                <Text style={{ fontSize: 8, fontWeight: 900, fontStyle: 'italic' }}>{data.notes}</Text>
                             </View>
                         ) : null}
 
