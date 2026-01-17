@@ -41,7 +41,7 @@ export default function InvoicePreview({ data }: InvoicePreviewProps) {
     const themeColor = '#0EA5E9'; // Sky blue from logo
 
     return (
-        <Card className="w-full max-w-[850px] mx-auto bg-white border-0 shadow-2xl print:shadow-none print:border-0 print:p-0 print:m-0 print:max-w-none overflow-hidden font-sans text-gray-900 mb-20 p-4 sm:p-8 relative print:bg-white">
+        <Card id="invoice-capture-area" className="w-full max-w-[850px] mx-auto bg-white border-0 shadow-2xl print:shadow-none print:border-0 print:p-0 print:m-0 print:max-w-none overflow-hidden font-sans text-gray-900 mb-20 p-4 sm:p-8 relative print:bg-white">
             <CardContent className="p-0 border border-gray-100 min-h-[1000px] flex flex-col print:border-0 print:min-h-0">
 
                 {/* Top Header Label */}

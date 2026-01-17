@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Download, Loader2 } from 'lucide-react';
-import { InvoicePDF } from './InvoicePDF';
-import { pdf } from '@react-pdf/renderer';
+import { exportElementToPDF } from '@/lib/exportPDF';
+import { createRoot } from 'react-dom/client';
+import InvoicePreview from './InvoicePreview';
 
 interface PDFDownloadIconButtonProps {
     data: any;
@@ -19,17 +20,34 @@ export default function PDFDownloadIconButton({ data, fileName = 'invoice.pdf' }
 
         setIsGenerating(true);
         try {
-            const blob = await pdf(<InvoicePDF data={data} />).toBlob();
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setTimeout(() => URL.revokeObjectURL(url), 100);
+            // Create a hidden container to render the preview for capture
+            const container = document.createElement('div');
+            container.id = 'hidden-invoice-capture-container';
+            // Position off-screen and set consistent width for capture
+            container.style.position = 'absolute';
+            container.style.left = '-9999px';
+            container.style.top = '-9999px';
+            container.style.width = '850px';
+            document.body.appendChild(container);
+
+            const root = createRoot(container);
+
+            // Wrap in a promise to wait for state/rendering to settle
+            await new Promise<void>((resolve) => {
+                root.render(<InvoicePreview data={data} />);
+                // Small timeout to ensure Next.js Image and other styles are ready
+                setTimeout(resolve, 500);
+            });
+
+            // Capture the specific area inside the newly rendered container
+            await exportElementToPDF('invoice-capture-area', fileName);
+
+            // Cleanup
+            root.unmount();
+            document.body.removeChild(container);
         } catch (error) {
             console.error('PDF Generation Error:', error);
+            alert('Failed to generate PDF. Please try again.');
         } finally {
             setIsGenerating(false);
         }

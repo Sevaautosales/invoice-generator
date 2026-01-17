@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Download, Loader2 } from 'lucide-react';
-import { InvoicePDF } from './InvoicePDF';
-import { pdf } from '@react-pdf/renderer';
+import { exportElementToPDF } from '@/lib/exportPDF';
 
 interface PDFDownloadButtonProps {
     data: any;
@@ -19,25 +18,11 @@ export default function PDFDownloadButton({ data, fileName = 'invoice.pdf' }: PD
 
         setIsGenerating(true);
         try {
-            // Generate blob
-            const blob = await pdf(<InvoicePDF data={data} />).toBlob();
-
-            // Create temporary link and trigger download
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-
-            // Append to body, click, then cleanup
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Cleanup object URL
-            setTimeout(() => URL.revokeObjectURL(url), 100);
+            // Trigger high-fidelity PDF export from DOM
+            await exportElementToPDF('invoice-capture-area', fileName);
         } catch (error) {
             console.error('PDF Generation Error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert('Failed to generate PDF. Please ensure the invoice preview is visible.');
         } finally {
             setIsGenerating(false);
         }
