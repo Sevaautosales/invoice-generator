@@ -114,7 +114,7 @@ export default function InvoicePreview({ data }: InvoicePreviewProps) {
                 <div className="mx-8 mb-8 space-y-4">
                     <p className="text-[11px] font-black text-gray-900 tracking-widest uppercase px-0 border-b border-gray-100 pb-2 flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: themeColor }} />
-                        VEHICLE DETAILS:-
+                        TECHNICAL SPECS:-
                     </p>
                     <div className="grid grid-cols-2 gap-8 text-[11px] font-bold text-gray-600 uppercase leading-relaxed">
                         <div className="space-y-1">

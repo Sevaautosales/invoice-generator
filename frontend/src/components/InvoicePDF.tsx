@@ -482,7 +482,7 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                 <View style={styles.carDetails}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                         <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: themeColor, marginRight: 8 }} />
-                        <Text style={styles.carHeader}>VEHICLE DETAILS:-</Text>
+                        <Text style={styles.carHeader}>TECHNICAL SPECS:-</Text>
                     </View>
                     <View style={styles.carGrid}>
                         <View style={{ width: '45%' }}>
