@@ -54,8 +54,8 @@ export default function InvoicePreview({ data }: InvoicePreviewProps) {
     const amountInWords = `INR ${numberToWords(data.total_amount)} Rupees Only.`;
 
     return (
-        <Card id="invoice-capture-area" className="w-full max-w-[850px] mx-auto bg-white border-0 print:shadow-none print:border-0 print:p-0 print:m-0 print:max-w-none overflow-hidden font-sans text-gray-900 mb-20 p-4 sm:p-8 relative print:bg-white" style={{ color: colors.gray900 }}>
-            {/* CardContent with A4 aspect ratio matching: 850px width -> ~1200px height */}
+        <Card id="invoice-capture-area" className="w-full max-w-[850px] mx-auto bg-white border-0 print:shadow-none print:border-0 print:p-0 print:m-0 print:max-w-none overflow-hidden font-sans text-gray-900 mb-20 relative print:bg-white" style={{ color: colors.gray900 }}>
+            {/* CardContent with A4 aspect ratio matching: 850px width -> ~1202px height */}
             <CardContent className="p-0 border flex flex-col print:border-0 print:min-h-0" style={{ borderColor: colors.gray100, minHeight: '1202px' }}>
 
                 {/* Top Header Label */}
