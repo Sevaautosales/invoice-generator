@@ -19,7 +19,7 @@ const themeColor = '#0EA5E9';
 
 const styles = StyleSheet.create({
     page: {
-        paddingVertical: 24,
+        paddingVertical: 20,
         paddingHorizontal: 0,
         fontSize: 10,
         fontFamily: 'Inter',
@@ -33,9 +33,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 10,
         paddingHorizontal: 32,
-        paddingTop: 12
+        paddingTop: 8
     },
     labelInvoice: {
         color: themeColor,
@@ -55,17 +55,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 32,
-        marginBottom: 32
+        marginBottom: 20,
+        position: 'relative'
     },
     companySection: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 16,
+        gap: 12,
         flex: 1
     },
     logo: {
-        width: 48,
-        height: 48
+        width: 44,
+        height: 44
     },
     companyInfo: {
         flex: 1
@@ -75,7 +76,6 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         textTransform: 'uppercase',
         color: '#1a1a1a',
-        marginBottom: 0,
         letterSpacing: -0.5
     },
     companyTagline: {
@@ -84,13 +84,13 @@ const styles = StyleSheet.create({
         fontWeight: 700,
         textTransform: 'uppercase',
         letterSpacing: 1.4,
-        marginTop: 2
+        marginTop: 1
     },
     companyDetails: {
         fontSize: 7.5,
         color: '#6b7280',
         lineHeight: 1.4,
-        marginTop: 12,
+        marginTop: 8,
         textTransform: 'uppercase',
         fontWeight: 700,
         maxWidth: 320
@@ -102,7 +102,8 @@ const styles = StyleSheet.create({
         fontWeight: 700,
     },
     contactSection: {
-        textAlign: 'right'
+        textAlign: 'right',
+        paddingRight: 20
     },
     contactText: {
         fontSize: 10.5,
@@ -116,24 +117,24 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 2,
-        textAlign: 'right',
-        marginTop: 16,
+        position: 'absolute',
+        right: 0,
+        top: 20,
         transform: 'rotate(90deg)',
-        transformOrigin: 'right top',
     },
     infoGrid: {
         flexDirection: 'row',
         borderTop: 1,
         borderBottom: 1,
         borderColor: '#f3f4f6',
-        paddingVertical: 24,
-        marginBottom: 32,
+        paddingVertical: 16,
+        marginBottom: 20,
         backgroundColor: '#f9fafb',
         paddingHorizontal: 32
     },
     infoCol: {
         flex: 1,
-        paddingRight: 32
+        paddingRight: 16
     },
     infoColBorder: {
         borderLeft: 1,
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 1.5,
-        marginBottom: 4
+        marginBottom: 3
     },
     infoValue: {
         fontSize: 10.5,
@@ -157,19 +158,19 @@ const styles = StyleSheet.create({
         fontSize: 8.5,
         fontWeight: 700,
         color: '#4b5563',
-        marginTop: 2
+        marginTop: 1
     },
     carDetails: {
         marginHorizontal: 32,
-        marginBottom: 32,
+        marginBottom: 20,
         borderBottom: 1,
         borderColor: '#f3f4f6',
-        paddingBottom: 16
+        paddingBottom: 12
     },
     carHeader: {
         fontSize: 8.5,
         fontWeight: 900,
-        marginBottom: 12,
+        marginBottom: 10,
         color: '#111827',
         letterSpacing: 1.5,
         textTransform: 'uppercase'
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
         fontSize: 8.5,
         color: '#4b5563',
         fontWeight: 700,
-        marginBottom: 4,
+        marginBottom: 3,
         textTransform: 'uppercase'
     },
     carBoldValue: {
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 32,
         borderBottom: 2,
         borderColor: '#000',
-        paddingBottom: 8,
+        paddingBottom: 6,
         marginBottom: 0,
         fontWeight: 900,
         fontSize: 8.5,
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     tableRow: {
         flexDirection: 'row',
         marginHorizontal: 32,
-        paddingVertical: 20,
+        paddingVertical: 12,
         borderBottom: 1,
         borderColor: '#f3f4f6',
         alignItems: 'flex-start'
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     itemSub: {
         fontSize: 7.5,
         color: '#9ca3af',
-        marginTop: 6,
+        marginTop: 4,
         fontWeight: 700,
         textTransform: 'uppercase',
         opacity: 0.7
@@ -252,11 +253,11 @@ const styles = StyleSheet.create({
     totalsSection: {
         alignItems: 'flex-end',
         marginHorizontal: 32,
-        marginTop: 24,
-        marginBottom: 48,
+        marginTop: 16,
+        marginBottom: 24,
         borderTop: 1,
         borderColor: '#f3f4f6',
-        paddingTop: 24
+        paddingTop: 16
     },
     totalRow: {
         flexDirection: 'row',
@@ -264,9 +265,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 192,
         backgroundColor: '#f9fafb',
-        padding: 16,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
         borderRadius: 12,
-        marginBottom: 16
+        marginBottom: 12
     },
     totalLabel: {
         fontSize: 10.5,
@@ -288,7 +290,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         textAlign: 'right',
         letterSpacing: 1,
-        marginBottom: 4
+        marginBottom: 2
     },
     amountWords: {
         fontSize: 8.5,
@@ -303,8 +305,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: 32,
-        marginTop: 8,
-        marginBottom: 48,
+        marginTop: 4,
+        marginBottom: 24,
         alignItems: 'flex-end'
     },
     notesSection: {
@@ -313,16 +315,16 @@ const styles = StyleSheet.create({
     notesBox: {
         backgroundColor: '#f0f9ff',
         paddingHorizontal: 12,
-        paddingVertical: 12,
+        paddingVertical: 10,
         borderRadius: 12,
         borderWidth: 1,
         borderColor: '#e0f2fe',
-        marginBottom: 16
+        marginBottom: 12
     },
     termsSection: {
         backgroundColor: '#f9fafb',
-        paddingHorizontal: 16,
-        paddingVertical: 16,
+        paddingHorizontal: 12,
+        paddingVertical: 12,
         borderRadius: 12,
         borderWidth: 1,
         borderColor: '#f3f4f6'
@@ -330,20 +332,20 @@ const styles = StyleSheet.create({
     termsHeader: {
         fontSize: 7.5,
         fontWeight: 900,
-        marginBottom: 8,
+        marginBottom: 6,
         textTransform: 'uppercase',
         color: '#111827',
         letterSpacing: 1
     },
     termItem: {
         flexDirection: 'row',
-        marginBottom: 4
+        marginBottom: 3
     },
     termIdx: {
         fontSize: 6,
         fontWeight: 900,
         color: '#d1d5db',
-        marginRight: 8
+        marginRight: 6
     },
     termText: {
         fontSize: 6,
@@ -359,7 +361,7 @@ const styles = StyleSheet.create({
     authLabel: {
         fontSize: 9.5,
         fontWeight: 900,
-        marginBottom: 48,
+        marginBottom: 32,
         textTransform: 'uppercase',
         color: '#1a110d'
     },
@@ -372,18 +374,20 @@ const styles = StyleSheet.create({
         fontSize: 7.5,
         color: '#9ca3af',
         fontWeight: 900,
-        marginTop: 8,
+        marginTop: 6,
         textTransform: 'uppercase',
         letterSpacing: 1.5
     },
     footer: {
         marginTop: 'auto',
         marginHorizontal: 32,
-        marginBottom: 24,
+        marginBottom: 16,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 12
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#f9fafb'
     },
     footerText: {
         fontSize: 7.5,
@@ -430,11 +434,11 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                             <Text style={styles.companyDetails}>
                                 Side Car For Two Wheeler Scooter & Bike, Four Wheel Attachment For Handicap, Auto Clutch & Hand Operate Kit of Four Wheels Cars
                             </Text>
-                            <View style={{ marginTop: 8, borderTop: 1, borderColor: '#f9fafb', paddingTop: 8 }}>
+                            <View style={{ marginTop: 6, borderTop: 1, borderColor: '#f9fafb', paddingTop: 6 }}>
                                 <Text style={styles.addressDetails}>
                                     <Text style={{ opacity: 0.4 }}>Work: </Text>Street No. 14, Ghanshyam Nagar Soc., Opp. New Shaktivijay, L.H. Road, SURAT.
                                 </Text>
-                                <View style={{ flexDirection: 'row', marginTop: 2, gap: 16 }}>
+                                <View style={{ flexDirection: 'row', marginTop: 1, gap: 16 }}>
                                     <Text style={styles.addressDetails}>
                                         <Text style={{ opacity: 0.4 }}>Email: </Text>sevaautosales@gmail.com
                                     </Text>
@@ -455,8 +459,8 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                 {/* Info Grid */}
                 <View style={styles.infoGrid}>
                     <View style={styles.infoCol}>
-                        <View style={{ marginBottom: 16 }}>
-                            <Text style={styles.infoLabel}>Bill No.:</Text>
+                        <View style={{ flexDirection: 'row', marginBottom: 12, alignItems: 'center' }}>
+                            <Text style={[styles.infoLabel, { marginBottom: 0, width: 60 }]}>Bill No.:</Text>
                             <Text style={styles.infoValue}>{data.invoice_number}</Text>
                         </View>
                         <View>
@@ -466,30 +470,30 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                         </View>
                     </View>
                     <View style={[styles.infoCol, styles.infoColBorder]}>
-                        <View style={{ marginBottom: 16 }}>
-                            <Text style={styles.infoLabel}>Date:</Text>
+                        <View style={{ flexDirection: 'row', marginBottom: 12, alignItems: 'center' }}>
+                            <Text style={[styles.infoLabel, { marginBottom: 0, width: 60 }]}>Date:</Text>
                             <Text style={styles.infoValue}>{formattedDate}</Text>
                         </View>
                         <View>
                             <Text style={styles.infoLabel}>Billing Address:</Text>
                             <Text style={styles.infoSubValue}>{data.billing_address}</Text>
-                            <Text style={[styles.infoSubValue, { marginTop: 4 }]}>{data.customer_address}</Text>
+                            <Text style={[styles.infoSubValue, { marginTop: 2 }]}>{data.customer_address}</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Car Details */}
                 <View style={styles.carDetails}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: themeColor, marginRight: 8 }} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                        <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: themeColor, marginRight: 8 }} />
                         <Text style={styles.carHeader}>TECHNICAL SPECS:-</Text>
                     </View>
                     <View style={styles.carGrid}>
-                        <View style={{ width: '45%' }}>
+                        <View style={{ width: '48%' }}>
                             <Text style={styles.carItem}>Vehicle Model : <Text style={styles.carBoldValue}>{data.car_model}</Text></Text>
                             <Text style={styles.carItem}>Reg no. : <Text style={styles.carBoldValue}>{data.reg_no}</Text></Text>
                         </View>
-                        <View style={{ width: '45%' }}>
+                        <View style={{ width: '48%' }}>
                             {data.engine_number && <Text style={styles.carItem}>Engine No. : <Text style={styles.carBoldValue}>{data.engine_number}</Text></Text>}
                             {data.chassis_number && <Text style={styles.carItem}>Chassis No. : <Text style={styles.carBoldValue}>{data.chassis_number}</Text></Text>}
                         </View>
@@ -534,7 +538,7 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                     <View style={styles.notesSection}>
                         {data.notes ? (
                             <View style={styles.notesBox}>
-                                <Text style={[styles.infoLabel, { color: themeColor, marginBottom: 4 }]}>Notes:</Text>
+                                <Text style={[styles.infoLabel, { color: themeColor, marginBottom: 2 }]}>Notes:</Text>
                                 <Text style={{ fontSize: 8.5, fontWeight: 900, fontStyle: 'italic', textTransform: 'uppercase', lineHeight: 1.4 }}>{data.notes}</Text>
                             </View>
                         ) : null}
