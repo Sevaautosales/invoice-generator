@@ -15,11 +15,20 @@ export const exportElementToPDF = async (elementId: string, fileName: string = '
     // Capture the element as a canvas
     // Using scale: 3 for high-fidelity (retina-like) resolution
     const canvas = await html2canvas(element, {
-        scale: 3,
+        scale: 4, // Increased to 4x for extreme sharpness, especially for logos
         useCORS: true,
+        allowTaint: true,
         logging: false,
         backgroundColor: '#FFFFFF',
-        windowWidth: 850, // Force a consistent width for capture
+        windowWidth: 850,
+        imageTimeout: 15000, // Increase timeout for image loading
+        onclone: (clonedDoc) => {
+            // Ensure all images in the cloned document are sharp
+            const images = clonedDoc.getElementsByTagName('img');
+            for (let i = 0; i < images.length; i++) {
+                images[i].style.imageRendering = 'pixelated';
+            }
+        }
     });
 
     const imgData = canvas.toDataURL('image/png');

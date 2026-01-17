@@ -67,8 +67,8 @@ export default function InvoicePreview({ data }: InvoicePreviewProps) {
                 <div className="flex justify-between items-start px-8 mb-8">
                     <div className="space-y-4 flex-1">
                         <div className="flex items-center gap-4">
-                            <div className="relative w-16 h-16">
-                                <Image src="/logo.png" alt="SAS Logo" fill className="object-contain" priority />
+                            <div className="w-20 h-20 flex items-center justify-center">
+                                <img src="/logo.png" alt="SAS Logo" className="w-20 h-20 object-contain" style={{ imageRendering: 'auto' }} />
                             </div>
                             <div>
                                 <h1 className="text-4xl font-black tracking-tighter uppercase leading-none" style={{ color: '#1a1a1a' }}>Seva Auto Sales</h1>
