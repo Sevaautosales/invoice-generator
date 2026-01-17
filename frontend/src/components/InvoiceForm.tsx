@@ -196,8 +196,7 @@ export default function InvoiceForm() {
                         chassis_number: formData.chassis_number,
                         items: formData.items,
                         notes: formData.notes,
-                        total_amount: total,
-                        status: 'paid'
+                        total_amount: total
                     }
                 ])
                 .select();

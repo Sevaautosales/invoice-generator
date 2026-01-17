@@ -60,7 +60,7 @@ export default function HistoryPage() {
     const filteredInvoices = invoices.filter(inv => {
         const matchesSearch =
             inv.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            inv.vehicle_model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            inv.car_model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             inv.invoice_number?.toLowerCase().includes(searchQuery.toLowerCase());
 
         if (activeCategory === 'all') return matchesSearch;
@@ -140,7 +140,7 @@ export default function HistoryPage() {
                                     <div className="p-6 space-y-4">
                                         <div>
                                             <h3 className="text-lg font-black text-black tracking-tight group-hover:text-sky-600 transition-colors uppercase">
-                                                {inv.vehicle_model}
+                                                {inv.car_model}
                                             </h3>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <Hash className="w-3 h-3 text-gray-300" />
