@@ -6,6 +6,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const isMock = !supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder');
 
 // --- Mock Supabase Implementation ---
+// --- Mock Supabase Implementation ---
 class MockSupabase {
     private storageKey = 'seva_auto_sales_invoices';
 
@@ -21,48 +22,71 @@ class MockSupabase {
     }
 
     from(table: string) {
-        return {
-            select: (query: string = '*') => {
-                const items = this.getItems();
-                return {
-                    order: (col: string, { ascending = false } = {}) => {
-                        const sorted = [...items].sort((a, b) => {
-                            const valA = a[col];
-                            const valB = b[col];
-                            return ascending ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+        const items = this.getItems();
+
+        const queryBuilder = (data: any[]) => {
+            let currentData = [...data];
+            let countValue: number | null = data.length;
+
+            const builder: any = {
+                select: (columns: string = '*', options?: any) => {
+                    return builder;
+                },
+                order: (col: string, { ascending = false } = {}) => {
+                    currentData.sort((a, b) => {
+                        const valA = a[col];
+                        const valB = b[col];
+                        return ascending ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+                    });
+                    return builder;
+                },
+                eq: (col: string, val: any) => {
+                    currentData = currentData.filter(i => i[col] === val);
+                    return builder;
+                },
+                gte: (col: string, val: any) => {
+                    currentData = currentData.filter(i => i[col] >= val);
+                    return builder;
+                },
+                lte: (col: string, val: any) => {
+                    currentData = currentData.filter(i => i[col] <= val);
+                    return builder;
+                },
+                or: (filters: string) => {
+                    // Simple mock implementation of ILIKE OR filters
+                    // Format: "col1.ilike.%val%,col2.ilike.%val%"
+                    const parts = filters.split(',');
+                    currentData = currentData.filter(item => {
+                        return parts.some(part => {
+                            const [col, op, pattern] = part.split('.');
+                            const searchVal = pattern.replace(/%/g, '').toLowerCase();
+                            return String(item[col] || '').toLowerCase().includes(searchVal);
                         });
-                        return Promise.resolve({ data: sorted, error: null });
-                    },
-                    eq: (col: string, val: any) => {
-                        const filtered = items.filter((i: any) => i[col] === val);
-                        return {
-                            single: () => Promise.resolve({ data: filtered[0] || null, error: filtered[0] ? null : { message: 'Not found' } })
-                        };
-                    },
-                    like: (col: string, pattern: string) => {
-                        const regex = new RegExp('^' + pattern.replace(/%/g, '.*') + '$', 'i');
-                        const filtered = items.filter((i: any) => regex.test(String(i[col])));
-                        return {
-                            order: (orderCol: string, { ascending = false } = {}) => {
-                                const sorted = [...filtered].sort((a, b) => {
-                                    const valA = a[orderCol];
-                                    const valB = b[orderCol];
-                                    return ascending ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-                                });
-                                return {
-                                    limit: (n: number) => Promise.resolve({ data: sorted.slice(0, n), error: null }),
-                                    then: (resolve: any) => resolve({ data: sorted, error: null })
-                                };
-                            },
-                            limit: (n: number) => Promise.resolve({ data: filtered.slice(0, n), error: null }),
-                            then: (resolve: any) => resolve({ data: filtered, error: null })
-                        };
-                    },
-                    then: (resolve: any) => resolve({ data: items, error: null })
-                };
-            },
+                    });
+                    return builder;
+                },
+                range: (fromIdx: number, toIdx: number) => {
+                    currentData = currentData.slice(fromIdx, toIdx + 1);
+                    return builder;
+                },
+                limit: (n: number) => {
+                    currentData = currentData.slice(0, n);
+                    return builder;
+                },
+                single: () => {
+                    return Promise.resolve({ data: currentData[0] || null, error: currentData[0] ? null : { message: 'Not found' } });
+                },
+                // Allow using as a promise
+                then: (onfulfilled: any) => {
+                    return Promise.resolve({ data: currentData, error: null, count: countValue }).then(onfulfilled);
+                }
+            };
+            return builder;
+        };
+
+        return {
+            select: (columns: string = '*', options?: any) => queryBuilder(items).select(columns, options),
             insert: (data: any[]) => {
-                const items = this.getItems();
                 const newItems = data.map(item => ({
                     ...item,
                     id: item.id || Math.random().toString(36).substr(2, 9),
@@ -74,16 +98,13 @@ class MockSupabase {
                     select: () => Promise.resolve({ data: newItems, error: null })
                 };
             },
-            delete: () => {
-                return {
-                    eq: (col: string, val: any) => {
-                        const items = this.getItems();
-                        const filtered = items.filter((i: any) => i[col] !== val);
-                        this.saveItems(filtered);
-                        return Promise.resolve({ data: null, error: null });
-                    }
-                };
-            }
+            delete: () => ({
+                eq: (col: string, val: any) => {
+                    const filtered = items.filter((i: any) => i[col] !== val);
+                    this.saveItems(filtered);
+                    return Promise.resolve({ data: null, error: null });
+                }
+            })
         };
     }
 }
