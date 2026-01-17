@@ -43,13 +43,15 @@ export const exportElementToPDF = async (elementId: string, fileName: string = '
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    // Calculate image dimensions to fit on A4, maintaining aspect ratio
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+    // Page dimensions in mm: 210 x 297 (Standard A4)
+    const margin = 10; // 10mm margin for professional look
+    const availableWidth = pdfWidth - (margin * 2);
 
-    // Add image to PDF
-    // We add a tiny bit of padding if needed, but here we fill the width
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+    // Calculate height based on aspect ratio
+    const imgHeight = (canvas.height * availableWidth) / canvas.width;
+
+    // Add image with margins
+    pdf.addImage(imgData, 'PNG', margin, margin, availableWidth, imgHeight);
 
     // Save the PDF
     pdf.save(fileName);
