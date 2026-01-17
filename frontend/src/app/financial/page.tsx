@@ -4,16 +4,20 @@ export const dynamic = 'force-dynamic';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
-import { TrendingUp, Users, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, Users, Calendar, ArrowUpRight, ArrowDownRight, Loader2 } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
+import { startOfMonth, endOfMonth, eachMonthOfInterval, format, subMonths, isSameMonth, parseISO } from 'date-fns';
 
 export default function FinancialPage() {
     const [invoices, setInvoices] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [monthlyData, setMonthlyData] = useState<any[]>([]);
     const [stats, setStats] = useState({
         totalSales: 0,
         activeClients: 0,
+        thisMonthSales: 0,
+        growth: 0
     });
 
     useEffect(() => {
@@ -32,12 +36,37 @@ export default function FinancialPage() {
             const invoicesList = data || [];
             setInvoices(invoicesList);
 
+            // Calculate overall stats
             const totalSales = invoicesList.reduce((sum: number, inv: any) => sum + Number(inv.total_amount), 0);
             const activeClients = new Set(invoicesList.map((inv: any) => inv.customer_phone)).size;
 
+            // Generate last 6 months intervals
+            const now = new Date();
+            const sixMonthsAgo = subMonths(now, 5);
+            const months = eachMonthOfInterval({ start: sixMonthsAgo, end: now });
+
+            // Group by month
+            const monthlyStats = months.map(monthDate => {
+                const monthName = format(monthDate, 'MMM');
+                const monthTotal = invoicesList.reduce((sum: number, inv: any) => {
+                    const invDate = parseISO(inv.invoice_date || inv.created_at);
+                    return isSameMonth(invDate, monthDate) ? sum + Number(inv.total_amount) : sum;
+                }, 0);
+                return { name: monthName, total: monthTotal };
+            });
+
+            setMonthlyData(monthlyStats);
+
+            // This month growth calculation
+            const currentMonthTotal = monthlyStats[monthlyStats.length - 1].total;
+            const lastMonthTotal = monthlyStats[monthlyStats.length - 2]?.total || 0;
+            const growth = lastMonthTotal > 0 ? ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100 : 0;
+
             setStats({
                 totalSales,
-                activeClients
+                activeClients,
+                thisMonthSales: currentMonthTotal,
+                growth
             });
         } catch (error: any) {
             console.error('Error fetching financial data:', error);
@@ -45,6 +74,8 @@ export default function FinancialPage() {
             setIsLoading(false);
         }
     };
+
+    const maxMonthlyTotal = Math.max(...monthlyData.map(d => d.total), 1000);
 
     return (
         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -61,7 +92,9 @@ export default function FinancialPage() {
                 <div className="flex gap-4">
                     <div className="px-5 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm flex items-center gap-3">
                         <Calendar className="w-4 h-4 text-gray-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">FY 2024-25</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">
+                            {format(new Date(), 'yyyy')} Activity
+                        </span>
                     </div>
                 </div>
             </div>
@@ -72,7 +105,7 @@ export default function FinancialPage() {
                     label="Gross Revenue"
                     value={stats.totalSales}
                     icon={TrendingUp}
-                    trend="+12.5%"
+                    trend={stats.growth >= 0 ? `+${stats.growth.toFixed(1)}%` : `${stats.growth.toFixed(1)}%`}
                     color="blue"
                 />
                 <StatCard
@@ -85,38 +118,45 @@ export default function FinancialPage() {
                 />
             </div>
 
-            {/* Main Charts area (Mocked) */}
+            {/* Main Charts area */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <Card className="lg:col-span-8 border-0 shadow-2xl shadow-gray-100 ring-1 ring-gray-100 overflow-hidden">
                     <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-white">
                         <div>
                             <h3 className="text-xl font-black text-black tracking-tight uppercase">Monthly Growth</h3>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Revenue Performance</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Real-time Revenue Performance</p>
                         </div>
                         <div className="flex gap-2">
-                            {['Jan', 'Feb', 'Mar', 'Apr'].map(month => (
-                                <div key={month} className="px-3 py-1 bg-gray-50 rounded-lg text-[9px] font-black uppercase text-gray-400 hover:bg-sky-500 hover:text-white transition-all cursor-pointer">
-                                    {month}
+                            {monthlyData.slice(-4).map(d => (
+                                <div key={d.name} className="px-3 py-1 bg-gray-50 rounded-lg text-[9px] font-black uppercase text-gray-400">
+                                    {d.name}
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <CardContent className="h-[400px] flex items-end justify-between p-12 gap-4 bg-white">
-                        {/* Mock Chart Bars */}
-                        {[65, 45, 85, 30, 95, 55, 75, 40].map((height, i) => (
-                            <div key={i} className="flex-1 group relative">
+                    <CardContent className="h-[400px] flex items-end justify-between p-12 gap-4 bg-white relative">
+                        {isLoading ? (
+                            <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
+                                <Loader2 className="w-8 h-8 text-sky-500 animate-spin" />
+                            </div>
+                        ) : null}
+
+                        {monthlyData.map((d, i) => (
+                            <div key={i} className="flex-1 group relative h-full flex flex-col justify-end">
                                 <div
-                                    className="w-full bg-sky-50 rounded-t-xl transition-all duration-500 group-hover:bg-sky-500 relative"
-                                    style={{ height: `${height}%` }}
+                                    className="w-full bg-sky-50 rounded-t-xl transition-all duration-700 group-hover:bg-sky-500 relative"
+                                    style={{ height: `${(d.total / maxMonthlyTotal) * 100}%`, minHeight: '4px' }}
                                 >
-                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all">
-                                        <span className="text-[9px] font-black text-black uppercase tracking-tighter whitespace-nowrap">
-                                            {formatCurrency(height * 10000)}
-                                        </span>
+                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all z-20">
+                                        <div className="bg-black text-white px-3 py-1.5 rounded-lg shadow-xl">
+                                            <span className="text-[9px] font-black uppercase tracking-tighter whitespace-nowrap">
+                                                {formatCurrency(d.total)}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="mt-4 text-[9px] font-black text-gray-300 uppercase text-center tracking-widest">
-                                    M-{i + 1}
+                                <div className="mt-4 text-[9px] font-black text-gray-300 uppercase text-center tracking-widest group-hover:text-sky-600 transition-colors">
+                                    {d.name}
                                 </div>
                             </div>
                         ))}
@@ -126,13 +166,16 @@ export default function FinancialPage() {
                 <Card className="lg:col-span-4 border-0 shadow-2xl shadow-gray-100 ring-1 ring-gray-100 overflow-hidden bg-white">
                     <div className="p-8 border-b border-gray-50">
                         <h3 className="text-xl font-black text-black tracking-tight uppercase">Recent Flow</h3>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Latest Transactions</p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Latest Live Transactions</p>
                     </div>
                     <CardContent className="p-0">
                         <div className="divide-y divide-gray-50">
-                            {invoices.slice(0, 6).map((inv, i) => (
-                                <div key={i} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-all">
+                            {invoices.slice(0, 8).map((inv, i) => (
+                                <div key={i} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-all group">
                                     <div className="flex items-center gap-4">
+                                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-[10px] font-black text-gray-400 group-hover:bg-sky-500 group-hover:text-white transition-all">
+                                            {inv.customer_name[0]}
+                                        </div>
                                         <div>
                                             <p className="text-xs font-black text-gray-900 tracking-tight">{inv.customer_name}</p>
                                             <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{inv.invoice_number}</p>
@@ -140,10 +183,11 @@ export default function FinancialPage() {
                                     </div>
                                     <div className="text-right">
                                         <p className="text-xs font-black text-gray-900">{formatCurrency(inv.total_amount)}</p>
+                                        <p className="text-[8px] font-bold text-gray-300 uppercase">{format(parseISO(inv.invoice_date || inv.created_at), 'dd MMM')}</p>
                                     </div>
                                 </div>
                             ))}
-                            {invoices.length === 0 && (
+                            {!isLoading && invoices.length === 0 && (
                                 <div className="p-20 text-center opacity-20">
                                     <TrendingUp className="w-12 h-12 mx-auto mb-4" />
                                     <p className="text-[10px] font-black uppercase tracking-widest">No Traffic Logged</p>
@@ -158,31 +202,23 @@ export default function FinancialPage() {
 }
 
 function StatCard({ label, value, icon: Icon, trend, isCurrency = true, color = 'black' }: any) {
-    const isRed = color === 'blue-deep';
-
     return (
-        <Card className="border-0 shadow-2xl shadow-gray-100 ring-1 ring-gray-100 overflow-hidden bg-white hover:ring-black transition-all group">
+        <Card className="border-0 shadow-2xl shadow-gray-100 ring-1 ring-gray-100 overflow-hidden bg-white hover:ring-sky-500 transition-all group">
             <CardContent className="p-8">
                 <div className="flex justify-between items-start mb-6">
-                    <div className={cn(
-                        "p-3 rounded-2xl transition-all group-hover:scale-110",
-                        isRed ? "bg-sky-50 text-sky-700 font-bold" : "bg-sky-50 text-sky-600 group-hover:bg-sky-500 group-hover:text-white"
-                    )}>
+                    <div className="p-3 rounded-2xl bg-sky-50 text-sky-600 group-hover:bg-sky-500 group-hover:text-white transition-all scale-110">
                         <Icon className="w-5 h-5" />
                     </div>
                     <div className={cn(
-                        "flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
-                        isRed ? "bg-red-50 text-red-600" : "bg-gray-50 text-gray-400"
+                        "flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
+                        trend.startsWith('+') ? "bg-emerald-50 text-emerald-600" : (trend === 'Active' ? "bg-gray-50 text-gray-400" : "bg-rose-50 text-rose-600")
                     )}>
-                        {trend.startsWith('+') ? <ArrowUpRight className="w-2.5 h-2.5" /> : null}
+                        {trend.startsWith('+') ? <ArrowUpRight className="w-2.5 h-2.5" /> : (trend === 'Active' ? null : <ArrowDownRight className="w-2.5 h-2.5" />)}
                         {trend}
                     </div>
                 </div>
                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">{label}</h3>
-                <p className={cn(
-                    "text-3xl font-black tracking-tighter",
-                    isRed ? "text-sky-700" : "text-black"
-                )}>
+                <p className="text-3xl font-black tracking-tighter text-black">
                     {isCurrency ? formatCurrency(value) : value}
                 </p>
             </CardContent>
