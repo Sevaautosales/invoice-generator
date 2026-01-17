@@ -10,6 +10,7 @@ interface AlertDialogProps {
     title: string;
     message: string;
     type?: 'success' | 'error' | 'info';
+    children?: React.ReactNode;
 }
 
 export default function AlertDialog({
@@ -17,7 +18,8 @@ export default function AlertDialog({
     onClose,
     title,
     message,
-    type = 'success'
+    type = 'success',
+    children
 }: AlertDialogProps) {
     if (!isOpen) return null;
 
@@ -52,6 +54,12 @@ export default function AlertDialog({
                     <p className="text-gray-600 font-medium leading-relaxed mb-8">
                         {message}
                     </p>
+
+                    {children && (
+                        <div className="mb-4">
+                            {children}
+                        </div>
+                    )}
 
                     {/* Action */}
                     <Button

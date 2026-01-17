@@ -9,6 +9,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { Loader2 } from 'lucide-react';
 import AlertDialog from '@/components/AlertDialog';
+import PDFDownloadButton from '@/components/PDFDownloadButton';
 
 export default function InvoiceForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,6 +50,8 @@ export default function InvoiceForm() {
         message: '',
         type: 'success'
     });
+
+    const [lastSavedInvoice, setLastSavedInvoice] = useState<any>(null);
 
     const themeColor = '#0EA5E9'; // Sky blue from logo
 
@@ -203,12 +206,21 @@ export default function InvoiceForm() {
 
             if (error) throw error;
 
+            const savedInvoice = data[0];
+
             setAlertDialog({
                 isOpen: true,
                 title: 'Success!',
-                message: 'Invoice saved successfully.',
+                message: 'Invoice saved successfully to the database.',
                 type: 'success'
             });
+
+            // We need to keep the saved data for the download link even after clearing form
+            setLastSavedInvoice({
+                ...savedInvoice,
+                created_at: new Date(savedInvoice.created_at).toLocaleDateString()
+            });
+
             handleClear();
         } catch (error: any) {
             console.error('Error saving invoice:', error);
@@ -565,7 +577,16 @@ export default function InvoiceForm() {
                 title={alertDialog.title}
                 message={alertDialog.message}
                 type={alertDialog.type}
-            />
+            >
+                {lastSavedInvoice && alertDialog.type === 'success' && (
+                    <div className="flex justify-center mb-2">
+                        <PDFDownloadButton
+                            data={lastSavedInvoice}
+                            fileName={`${lastSavedInvoice.invoice_number}.pdf`}
+                        />
+                    </div>
+                )}
+            </AlertDialog>
         </form>
     );
 }

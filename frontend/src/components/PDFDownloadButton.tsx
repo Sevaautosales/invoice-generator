@@ -1,16 +1,10 @@
 'use client';
 
-import React from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Download, Loader2 } from 'lucide-react';
 import { InvoicePDF } from './InvoicePDF';
-
-// Dynamically import PDFDownloadLink to avoid SSR issues
-const PDFDownloadLink = dynamic(
-    () => import('@react-pdf/renderer').then((mod) => mod.PDFDownloadLink),
-    { ssr: false }
-);
+import { pdf } from '@react-pdf/renderer';
 
 interface PDFDownloadButtonProps {
     data: any;
@@ -18,27 +12,52 @@ interface PDFDownloadButtonProps {
 }
 
 export default function PDFDownloadButton({ data, fileName = 'invoice.pdf' }: PDFDownloadButtonProps) {
+    const [isGenerating, setIsGenerating] = useState(false);
+
+    const handleDownload = async () => {
+        if (isGenerating) return;
+
+        setIsGenerating(true);
+        try {
+            // Generate blob
+            const blob = await pdf(<InvoicePDF data={data} />).toBlob();
+
+            // Create temporary link and trigger download
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+
+            // Append to body, click, then cleanup
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Cleanup object URL
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+        } catch (error) {
+            console.error('PDF Generation Error:', error);
+            alert('Failed to generate PDF. Please try again.');
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     return (
         <div className="inline-block">
-            <PDFDownloadLink
-                document={<InvoicePDF data={data} />}
-                fileName={fileName}
+            <Button
+                variant="primary"
+                disabled={isGenerating}
+                onClick={handleDownload}
+                className="h-12 px-8 rounded-2xl bg-sky-500 border-sky-500 shadow-lg shadow-sky-500/10 transition-all active:scale-95 uppercase tracking-widest font-black text-[10px] hover:bg-sky-600 hover:border-sky-600"
             >
-                {({ blob, url, loading, error }) => (
-                    <Button
-                        variant="primary"
-                        disabled={loading}
-                        className="h-12 px-8 rounded-2xl bg-sky-500 border-sky-500 shadow-lg shadow-sky-500/10 transition-all active:scale-95 uppercase tracking-widest font-black text-[10px] hover:bg-sky-600 hover:border-sky-600"
-                    >
-                        {loading ? (
-                            <Loader2 className="w-4 h-4 mr-3 animate-spin text-white" />
-                        ) : (
-                            <Download className="w-4 h-4 mr-3 text-white" />
-                        )}
-                        {loading ? 'Processing...' : 'Export PDF'}
-                    </Button>
+                {isGenerating ? (
+                    <Loader2 className="w-4 h-4 mr-3 animate-spin text-white" />
+                ) : (
+                    <Download className="w-4 h-4 mr-3 text-white" />
                 )}
-            </PDFDownloadLink>
+                {isGenerating ? 'Generating...' : 'Export PDF'}
+            </Button>
         </div>
     );
 }

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import AlertDialog from '@/components/AlertDialog';
+import PDFDownloadIconButton from '@/components/PDFDownloadIconButton';
 
 export default function InvoicesPage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -200,9 +201,10 @@ export default function InvoicesPage() {
                                                         <Eye className="w-4 h-4 text-sky-600" />
                                                     </Button>
                                                 </Link>
-                                                <Button variant="outline" size="sm" className="h-10 w-10 p-0 rounded-full border-sky-50 bg-sky-50/30 hover:border-sky-500 hover:bg-sky-50 active:scale-90 transition-all">
-                                                    <Download className="w-4 h-4 text-sky-400 group-hover:text-sky-600" />
-                                                </Button>
+                                                <PDFDownloadIconButton
+                                                    data={invoice}
+                                                    fileName={`${invoice.invoice_number}.pdf`}
+                                                />
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
