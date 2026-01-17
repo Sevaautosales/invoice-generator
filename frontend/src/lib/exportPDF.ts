@@ -44,7 +44,7 @@ export const exportElementToPDF = async (elementId: string, fileName: string = '
     const pdfHeight = pdf.internal.pageSize.getHeight();
 
     // Page dimensions in mm: 210 x 297 (Standard A4)
-    const margin = 10; // 10mm margin for professional look
+    const margin = 5; // 5mm margin for a more balanced look
     const availableWidth = pdfWidth - (margin * 2);
 
     // Calculate height based on aspect ratio
