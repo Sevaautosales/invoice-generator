@@ -253,9 +253,8 @@ const styles = StyleSheet.create({
     },
     amountWords: {
         fontSize: 8.5,
-        fontFamily: 'Helvetica-Bold',
+        fontFamily: 'Helvetica-BoldOblique',
         textAlign: 'right',
-        fontStyle: 'italic',
         color: '#111827',
         width: 300
     },
@@ -487,7 +486,7 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                         {data.notes ? (
                             <View style={styles.notesBox}>
                                 <Text style={[styles.infoLabel, { color: '#0EA5E9', marginBottom: 2 }]}>Notes:</Text>
-                                <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', fontStyle: 'italic' }}>{data.notes}</Text>
+                                <Text style={{ fontSize: 8, fontFamily: 'Helvetica-BoldOblique' }}>{data.notes}</Text>
                             </View>
                         ) : null}
 
