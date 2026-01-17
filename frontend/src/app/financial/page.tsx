@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
-import { IndianRupee, TrendingUp, Users, AlertCircle, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, Users, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
@@ -13,8 +13,6 @@ export default function FinancialPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [stats, setStats] = useState({
         totalSales: 0,
-        totalCollected: 0,
-        totalReceivables: 0,
         activeClients: 0,
     });
 
@@ -35,14 +33,10 @@ export default function FinancialPage() {
             setInvoices(invoicesList);
 
             const totalSales = invoicesList.reduce((sum: number, inv: any) => sum + Number(inv.total_amount), 0);
-            const totalCollected = invoicesList.reduce((sum: number, inv: any) => sum + Number(inv.amount_paid || 0), 0);
-            const totalReceivables = invoicesList.reduce((sum: number, inv: any) => sum + Number(inv.balance_due || 0), 0);
             const activeClients = new Set(invoicesList.map((inv: any) => inv.customer_phone)).size;
 
             setStats({
                 totalSales,
-                totalCollected,
-                totalReceivables,
                 activeClients
             });
         } catch (error: any) {
@@ -58,7 +52,7 @@ export default function FinancialPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-2 mb-2">
-                        <div className="h-1 w-8 bg-black rounded-full" />
+                        <div className="h-1 w-8 bg-sky-500 rounded-full" />
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Financial Insights</span>
                     </div>
                     <h2 className="text-4xl font-black text-black tracking-tighter uppercase">Ledger Overview</h2>
@@ -73,27 +67,13 @@ export default function FinancialPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
                 <StatCard
                     label="Gross Revenue"
                     value={stats.totalSales}
                     icon={TrendingUp}
                     trend="+12.5%"
-                    color="black"
-                />
-                <StatCard
-                    label="Total Collected"
-                    value={stats.totalCollected}
-                    icon={IndianRupee}
-                    trend="+8.2%"
-                    color="gray"
-                />
-                <StatCard
-                    label="Outstanding"
-                    value={stats.totalReceivables}
-                    icon={AlertCircle}
-                    trend={stats.totalReceivables > 0 ? "Due" : "Clear"}
-                    color={stats.totalReceivables > 0 ? "red" : "black"}
+                    color="blue"
                 />
                 <StatCard
                     label="Total Clients"
@@ -115,7 +95,7 @@ export default function FinancialPage() {
                         </div>
                         <div className="flex gap-2">
                             {['Jan', 'Feb', 'Mar', 'Apr'].map(month => (
-                                <div key={month} className="px-3 py-1 bg-gray-50 rounded-lg text-[9px] font-black uppercase text-gray-400 hover:bg-black hover:text-white transition-all cursor-pointer">
+                                <div key={month} className="px-3 py-1 bg-gray-50 rounded-lg text-[9px] font-black uppercase text-gray-400 hover:bg-sky-500 hover:text-white transition-all cursor-pointer">
                                     {month}
                                 </div>
                             ))}
@@ -126,7 +106,7 @@ export default function FinancialPage() {
                         {[65, 45, 85, 30, 95, 55, 75, 40].map((height, i) => (
                             <div key={i} className="flex-1 group relative">
                                 <div
-                                    className="w-full bg-gray-100 rounded-t-xl transition-all duration-500 group-hover:bg-black relative"
+                                    className="w-full bg-sky-50 rounded-t-xl transition-all duration-500 group-hover:bg-sky-500 relative"
                                     style={{ height: `${height}%` }}
                                 >
                                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all">
@@ -153,10 +133,6 @@ export default function FinancialPage() {
                             {invoices.slice(0, 6).map((inv, i) => (
                                 <div key={i} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className={cn(
-                                            "w-2 h-2 rounded-full",
-                                            Number(inv.balance_due) > 0 ? "bg-red-500" : "bg-black"
-                                        )} />
                                         <div>
                                             <p className="text-xs font-black text-gray-900 tracking-tight">{inv.customer_name}</p>
                                             <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{inv.invoice_number}</p>
@@ -164,12 +140,6 @@ export default function FinancialPage() {
                                     </div>
                                     <div className="text-right">
                                         <p className="text-xs font-black text-gray-900">{formatCurrency(inv.total_amount)}</p>
-                                        <p className={cn(
-                                            "text-[9px] font-black uppercase tracking-tighter",
-                                            Number(inv.balance_due) > 0 ? "text-red-500" : "text-gray-400"
-                                        )}>
-                                            {Number(inv.balance_due) > 0 ? `Due: ${formatCurrency(inv.balance_due)}` : 'Full Paid'}
-                                        </p>
                                     </div>
                                 </div>
                             ))}
@@ -188,7 +158,7 @@ export default function FinancialPage() {
 }
 
 function StatCard({ label, value, icon: Icon, trend, isCurrency = true, color = 'black' }: any) {
-    const isRed = color === 'red';
+    const isRed = color === 'blue-deep';
 
     return (
         <Card className="border-0 shadow-2xl shadow-gray-100 ring-1 ring-gray-100 overflow-hidden bg-white hover:ring-black transition-all group">
@@ -196,7 +166,7 @@ function StatCard({ label, value, icon: Icon, trend, isCurrency = true, color = 
                 <div className="flex justify-between items-start mb-6">
                     <div className={cn(
                         "p-3 rounded-2xl transition-all group-hover:scale-110",
-                        isRed ? "bg-red-50 text-red-600" : "bg-gray-50 text-gray-900 group-hover:bg-black group-hover:text-white"
+                        isRed ? "bg-sky-50 text-sky-700 font-bold" : "bg-sky-50 text-sky-600 group-hover:bg-sky-500 group-hover:text-white"
                     )}>
                         <Icon className="w-5 h-5" />
                     </div>
@@ -211,7 +181,7 @@ function StatCard({ label, value, icon: Icon, trend, isCurrency = true, color = 
                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">{label}</h3>
                 <p className={cn(
                     "text-3xl font-black tracking-tighter",
-                    isRed ? "text-red-600" : "text-black"
+                    isRed ? "text-sky-700" : "text-black"
                 )}>
                     {isCurrency ? formatCurrency(value) : value}
                 </p>

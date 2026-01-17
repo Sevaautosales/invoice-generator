@@ -2,186 +2,217 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
-import { formatCurrency } from '@/lib/utils';
-import { MapPin, Phone, Hash, ClipboardList } from 'lucide-react';
+import { formatCurrency, cn } from '@/lib/utils';
+import { numberToWords } from '@/lib/numberToWords';
+import Image from 'next/image';
 
 interface InvoicePreviewProps {
     data: {
         invoice_number: string;
-        created_at: string;
+        invoice_date: string;
         customer_name: string;
         customer_phone: string;
-        customer_address?: string;
-        vehicle_model: string;
-        engine_number: string;
-        chassis_number: string;
-        vehicle_price: number;
-        other_charges: number;
+        customer_address?: string; // region
+        billing_address?: string; // full
+        car_model?: string;
+        reg_no?: string;
+        engine_number?: string;
+        chassis_number?: string;
+        notes?: string;
+        items: Array<{
+            description: string;
+            mrp: number;
+            selling_price: number;
+            amount: number;
+        }>;
         total_amount: number;
-        amount_paid: number;
-        balance_due: number;
     };
 }
 
 export default function InvoicePreview({ data }: InvoicePreviewProps) {
+    const formattedDate = data.invoice_date ? new Date(data.invoice_date).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    }) : '';
+
+    const amountInWords = `INR ${numberToWords(data.total_amount)} Rupees Only.`;
+
+    const themeColor = '#0EA5E9'; // Sky blue from logo
+
     return (
-        <Card className="w-full max-w-4xl mx-auto bg-white border-0 shadow-[0_0_50px_rgba(0,0,0,0.05)] print:shadow-none print:border-0 overflow-hidden">
-            <CardContent className="p-0">
-                {/* Header Section */}
-                <div className="bg-black p-12 text-white">
-                    <div className="flex justify-between items-start">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="h-1.5 w-12 bg-white rounded-full" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">Official Invoice</span>
+        <Card className="w-full max-w-[850px] mx-auto bg-white border-0 shadow-2xl print:shadow-none print:border-0 print:p-0 print:m-0 print:max-w-none overflow-hidden font-sans text-gray-900 mb-20 p-4 sm:p-8 relative print:bg-white">
+            <CardContent className="p-0 border border-gray-100 min-h-[1000px] flex flex-col print:border-0 print:min-h-0">
+
+                {/* Top Header Label */}
+                <div className="flex justify-between items-start mb-4 px-8 pt-6">
+                    <h2 style={{ color: themeColor }} className="font-black text-xl tracking-widest uppercase">INVOICE</h2>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">ORIGINAL FOR RECIPIENT</span>
+                </div>
+
+                {/* Seva Auto Sales Branding */}
+                <div className="flex justify-between items-start px-8 mb-8">
+                    <div className="space-y-4 flex-1">
+                        <div className="flex items-center gap-4">
+                            <div className="relative w-16 h-16">
+                                <Image src="/logo.png" alt="SAS Logo" fill className="object-contain" />
                             </div>
-                            <h1 className="text-5xl font-black tracking-tighter leading-none">SEVA <br />AUTO SALES</h1>
-                            <div className="pt-4 space-y-1.5 text-xs font-bold text-white/60 uppercase tracking-widest">
-                                <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" /> 123 Dealer Row, Auto City, ST 12345</p>
-                                <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> (555) 123-4567</p>
+                            <div>
+                                <h1 className="text-4xl font-black text-[#1a1a1a] tracking-tighter uppercase leading-none">Seva Auto Sales</h1>
+                                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Professional Vehicle Modifications</p>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <h2 className="text-8xl font-black text-white/5 tracking-tighter absolute top-0 right-0 pointer-events-none">INVOICE</h2>
-                            <div className="relative pt-10">
-                                <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-1">Invoice Number</p>
-                                <p className="text-2xl font-black tracking-tight">{data.invoice_number}</p>
-                                <div className="mt-6">
-                                    <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-1">Date Issued</p>
-                                    <p className="text-sm font-bold tracking-widest">{data.created_at}</p>
+
+                        <div className="text-[10px] font-bold text-gray-500 leading-relaxed uppercase space-y-1">
+                            <p className="text-black/80 max-w-md">Side Car For Two Wheeler Scooter & Bike, Four Wheel Attachment For Handicap, Auto Clutch & Hand Operate Kit of Four Wheels Cars</p>
+                            <div className="grid grid-cols-1 gap-1 text-[9px] pt-2 border-t border-gray-50">
+                                <p><span className="text-black/40">Work:</span> Street No. 14, Ghanshyam Nagar Soc., Opp. New Shaktivijay, L.H. Road, SURAT.</p>
+                                <div className="flex gap-4">
+                                    <p><span className="text-black/40">Email:</span> <span className="text-black lowercase">sevaautosales@gmail.com</span></p>
+                                    <p><span className="text-black/40">Web:</span> <span className="text-black lowercase">sevaautosales.vercel.app</span></p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-right">
+                        <div className="text-sm font-black text-[#1a1a1a] mb-1">Mo. 99043 66000</div>
+                        <div className="text-sm font-black text-[#1a1a1a]">94271 00629</div>
+                        <div className="mt-4 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] rotate-90 origin-right translate-x-4">Est. 2005</div>
+                    </div>
+                </div>
+
+                {/* Info Grid (Customer & Invoice) */}
+                <div className="grid grid-cols-2 gap-0 border-t border-b border-gray-100 mx-8 py-6 mb-8 bg-gray-50/30">
+                    <div className="space-y-4 pr-8">
+                        <div className="flex gap-2 items-center">
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest w-24">Bill No.:</span>
+                            <span className="text-[14px] font-black text-black">{data.invoice_number}</span>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer Details:</p>
+                            <p className="text-[14px] font-black uppercase text-black">{data.customer_name}</p>
+                            {data.customer_phone && <p className="text-[11px] font-bold text-gray-600">Ph: {data.customer_phone}</p>}
+                        </div>
+                    </div>
+                    <div className="space-y-4 pl-8 border-l border-gray-100">
+                        <div className="flex gap-2 items-center">
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest w-24">Date:</span>
+                            <span className="text-[14px] font-black text-black">{formattedDate}</span>
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Billing Address:</p>
+                            <div className="text-[11px] font-bold text-gray-600 uppercase">
+                                <p className="leading-tight">{data.billing_address}</p>
+                                <p className="mt-1">{data.customer_address}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Content Section */}
-                <div className="p-16 space-y-16">
-                    {/* Customer & Vehicle Info */}
-                    <div className="grid grid-cols-2 gap-20">
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-gray-200 rounded-full" />
-                                    Bill To
-                                </h3>
-                                <div className="space-y-4">
-                                    <p className="text-2xl font-black text-black tracking-tight">{data.customer_name}</p>
-                                    <div className="space-y-1.5 text-xs font-bold text-gray-500 uppercase tracking-widest">
-                                        <p className="flex items-center gap-2">{data.customer_phone}</p>
-                                        {data.customer_address && (
-                                            <p className="leading-relaxed max-w-[250px]">{data.customer_address}</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
+                {/* Car Details */}
+                <div className="mx-8 mb-8 space-y-4">
+                    <p className="text-[11px] font-black text-gray-900 tracking-widest uppercase px-0 border-b border-gray-100 pb-2 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: themeColor }} />
+                        VEHICLE DETAILS:-
+                    </p>
+                    <div className="grid grid-cols-2 gap-8 text-[11px] font-bold text-gray-600 uppercase leading-relaxed">
+                        <div className="space-y-1">
+                            <p>Vehicle Model : <span className="text-black font-black">{data.car_model}</span></p>
+                            <p>Reg no. : <span className="text-black font-black">{data.reg_no}</span></p>
                         </div>
-                        <div className="space-y-6">
-                            <div>
-                                <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-gray-200 rounded-full" />
-                                    Vehicle Information
-                                </h3>
-                                <div className="space-y-6">
-                                    <p className="text-2xl font-black text-black tracking-tight uppercase">{data.vehicle_model}</p>
-                                    <div className="grid grid-cols-1 gap-6 text-xs font-bold uppercase tracking-widest">
-                                        <div>
-                                            <p className="text-[9px] text-gray-400 mb-1.5 flex items-center gap-2">
-                                                <Hash className="w-3 h-3" /> Engine Number
-                                            </p>
-                                            <p className="text-black bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">{data.engine_number}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[9px] text-gray-400 mb-1.5 flex items-center gap-2">
-                                                <ClipboardList className="w-3 h-3" /> Chassis Number
-                                            </p>
-                                            <p className="text-black bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">{data.chassis_number}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="space-y-1">
+                            {data.engine_number && <p>Engine No. : <span className="text-black font-black">{data.engine_number}</span></p>}
+                            {data.chassis_number && <p>Chassis No. : <span className="text-black font-black">{data.chassis_number}</span></p>}
                         </div>
                     </div>
+                </div>
 
-                    {/* Pricing Table */}
-                    <div className="space-y-6">
-                        <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 bg-gray-200 rounded-full" />
-                            Financial Breakdown
-                        </h3>
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="border-b-4 border-black">
-                                    <th className="py-6 text-[10px] font-black text-black uppercase tracking-[0.4em]">Description</th>
-                                    <th className="py-6 text-right text-[10px] font-black text-black uppercase tracking-[0.4em]">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50">
-                                <tr>
-                                    <td className="py-8">
-                                        <p className="text-base font-black text-black uppercase tracking-tight">Vehicle Purchase Price</p>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Base unit cost</p>
-                                    </td>
-                                    <td className="py-8 text-right text-lg font-black text-black">
-                                        {formatCurrency(data.vehicle_price)}
-                                    </td>
-                                </tr>
-                                {data.other_charges > 0 && (
-                                    <tr>
-                                        <td className="py-6">
-                                            <p className="text-sm font-bold text-gray-600 uppercase tracking-widest">Service & Other Charges</p>
-                                        </td>
-                                        <td className="py-6 text-right text-sm font-bold text-gray-900">
-                                            {formatCurrency(data.other_charges)}
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                {/* Table Header */}
+                <div className="mx-8 mb-0 grid grid-cols-12 border-b-2 border-black pb-2 text-[11px] font-black uppercase tracking-widest text-[#1a1a1a]">
+                    <div className="col-span-1">No.</div>
+                    <div className="col-span-5">Descriptions</div>
+                    <div className="col-span-3 text-right">Rate</div>
+                    <div className="col-span-3 text-right">Amount</div>
+                </div>
 
-                    {/* Summary Calculations */}
-                    <div className="flex justify-end pt-12">
-                        <div className="w-full max-w-sm space-y-6">
-                            <div className="space-y-3 pb-6 border-b border-gray-100">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-400 font-bold uppercase tracking-widest">Amount Paid</span>
-                                    <span className="font-black text-black">{formatCurrency(data.amount_paid)}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-gray-400 font-bold uppercase tracking-widest">Balance Due</span>
-                                    <span className={data.balance_due > 0 ? "font-black text-red-600" : "font-black text-black"}>
-                                        {formatCurrency(data.balance_due)}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="flex justify-between items-end pt-4 border-t-2 border-black">
-                                <div>
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-1">Total Amount Due</p>
-                                    <span className="text-5xl font-black text-black tracking-tighter leading-none">
-                                        {formatCurrency(data.total_amount)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="pt-20 border-t border-gray-100">
-                        <div className="flex justify-between items-center">
-                            <div className="space-y-1">
-                                <p className="text-[10px] font-black text-black uppercase tracking-widest">Seva Auto Sales</p>
-                                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Authorized Dealer Signature Space</p>
-                            </div>
-                            <div className="text-right space-y-2">
-                                <div className="h-px w-48 bg-gray-200 ml-auto" />
-                                <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.3em]">
-                                    Digital Record - Computer Generated
+                {/* Table Rows */}
+                <div className="mx-8 mb-6 divide-y divide-gray-100">
+                    {data.items.map((item, idx) => (
+                        <div key={idx} className="grid grid-cols-12 py-5 items-start">
+                            <div className="col-span-1 text-[13px] font-black text-gray-300">{(idx + 1).toString().padStart(2, '0')}</div>
+                            <div className="col-span-5 pr-4">
+                                <p className="text-[14px] font-black text-black uppercase tracking-tight leading-tight">{item.description}</p>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase leading-tight mt-1.5 opacity-70">
+                                    Quality modification with precision engineering
                                 </p>
                             </div>
+                            <div className="col-span-3 text-right text-[15px] font-black text-gray-900">{formatCurrency(item.selling_price).replace('₹', '')}</div>
+                            <div className="col-span-3 text-right text-[15px] font-black text-black">{formatCurrency(item.amount).replace('₹', '')}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Totals Section */}
+                <div className="mx-8 mb-12 flex flex-col items-end border-t border-gray-100 pt-6">
+                    <div className="flex justify-between w-64 items-center mb-4 bg-gray-50 p-4 rounded-xl">
+                        <span className="text-sm font-black text-gray-400 uppercase tracking-widest">Total</span>
+                        <span className="text-3xl font-black text-black tracking-tighter">{formatCurrency(data.total_amount)}</span>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Amount in Words:</p>
+                        <p className="text-[11px] font-black text-gray-900 uppercase italic max-w-sm ml-auto">
+                            {amountInWords}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Footer Meta Row (Terms + Signature) */}
+                <div className="mx-8 grid grid-cols-2 gap-8 items-end mb-12">
+                    <div className="space-y-4">
+                        {data.notes && (
+                            <div className="p-3 bg-sky-50/50 rounded-xl border border-sky-100">
+                                <p style={{ color: themeColor }} className="text-[10px] font-black uppercase tracking-widest mb-1">Notes:</p>
+                                <p className="text-[11px] font-black text-gray-900 uppercase italic leading-relaxed">{data.notes}</p>
+                            </div>
+                        )}
+
+                        {/* Terms and Conditions inside footer meta */}
+                        <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                            <p className="text-[10px] font-black text-gray-900 uppercase mb-2 tracking-widest">Terms & Conditions:</p>
+                            <div className="space-y-1">
+                                {[
+                                    'Goods once sold will not taken back.',
+                                    'Damage while using not covered under warranty.',
+                                    'Product carries 1 YEAR Warranty.',
+                                    'Repaired/Alteration is at owner risk.'
+                                ].map((term, i) => (
+                                    <div key={i} className="flex gap-2">
+                                        <span className="text-gray-300 font-black text-[8px]">{i + 1}.</span>
+                                        <span className="text-[8px] font-bold text-gray-500 uppercase">{term}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-right flex flex-col items-end pt-4">
+                        <div className="relative text-right mb-0">
+                            <p className="text-[12px] font-black uppercase text-[#1a110d] mb-12">For Seva Auto Sales</p>
+                            <div className="w-48 h-px bg-gray-200 ml-auto" />
+                            <p className="text-[10px] font-black text-gray-400 mt-2 uppercase tracking-widest">Authorized Signatory</p>
                         </div>
                     </div>
                 </div>
+
+
+                {/* Page Footer Text */}
+                <div className="mt-auto mx-8 mb-8 flex justify-between items-center text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                    <p>Page 1/1</p>
+                    <p>Computer Generated Document • No Signature Required</p>
+                    <p className="text-black/20">Seva Auto Sales</p>
+                </div>
+
             </CardContent>
         </Card>
     );

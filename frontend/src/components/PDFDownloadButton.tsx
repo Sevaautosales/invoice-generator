@@ -28,7 +28,7 @@ export default function PDFDownloadButton({ data, fileName = 'invoice.pdf' }: PD
                     <Button
                         variant="primary"
                         disabled={loading}
-                        className="h-12 px-8 rounded-2xl bg-black border-black shadow-lg shadow-black/10 transition-all active:scale-95 uppercase tracking-widest font-black text-[10px]"
+                        className="h-12 px-8 rounded-2xl bg-sky-500 border-sky-500 shadow-lg shadow-sky-500/10 transition-all active:scale-95 uppercase tracking-widest font-black text-[10px] hover:bg-sky-600 hover:border-sky-600"
                     >
                         {loading ? (
                             <Loader2 className="w-4 h-4 mr-3 animate-spin text-white" />

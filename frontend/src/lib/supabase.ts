@@ -39,6 +39,25 @@ class MockSupabase {
                             single: () => Promise.resolve({ data: filtered[0] || null, error: filtered[0] ? null : { message: 'Not found' } })
                         };
                     },
+                    like: (col: string, pattern: string) => {
+                        const regex = new RegExp('^' + pattern.replace(/%/g, '.*') + '$', 'i');
+                        const filtered = items.filter((i: any) => regex.test(String(i[col])));
+                        return {
+                            order: (orderCol: string, { ascending = false } = {}) => {
+                                const sorted = [...filtered].sort((a, b) => {
+                                    const valA = a[orderCol];
+                                    const valB = b[orderCol];
+                                    return ascending ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+                                });
+                                return {
+                                    limit: (n: number) => Promise.resolve({ data: sorted.slice(0, n), error: null }),
+                                    then: (resolve: any) => resolve({ data: sorted, error: null })
+                                };
+                            },
+                            limit: (n: number) => Promise.resolve({ data: filtered.slice(0, n), error: null }),
+                            then: (resolve: any) => resolve({ data: filtered, error: null })
+                        };
+                    },
                     then: (resolve: any) => resolve({ data: items, error: null })
                 };
             },

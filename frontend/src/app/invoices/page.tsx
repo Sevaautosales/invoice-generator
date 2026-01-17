@@ -108,14 +108,14 @@ export default function InvoicesPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-2 mb-2">
-                        <div className="h-1 w-8 bg-black rounded-full" />
+                        <div className="h-1 w-8 bg-sky-500 rounded-full" />
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Database</span>
                     </div>
                     <h2 className="text-4xl font-black text-black tracking-tighter">Records</h2>
                     <p className="text-gray-400 font-medium mt-1 text-sm uppercase tracking-wider">Historical Invoice Management</p>
                 </div>
                 <Link href="/">
-                    <Button variant="primary" className="px-8 bg-black border-black">
+                    <Button variant="primary" className="px-8 bg-sky-500 border-sky-500 shadow-sky-500/20 shadow-lg hover:bg-sky-600 hover:border-sky-600 scale-100 hover:scale-105 transition-all">
                         <Plus className="w-4 h-4 mr-2" />
                         New Entry
                     </Button>
@@ -128,11 +128,11 @@ export default function InvoicesPage() {
                         placeholder="Search by customer, invoice #, vehicle, or engine..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        icon={<Search className="w-4 h-4" />}
+                        icon={<Search className="w-4 h-4 text-sky-400" />}
                         className="bg-white border-gray-100 shadow-sm"
                     />
                 </div>
-                <Button variant="outline" onClick={fetchInvoices} className="border-gray-200 text-gray-400 font-bold uppercase tracking-widest text-[10px]">
+                <Button variant="outline" onClick={fetchInvoices} className="border-sky-100 text-sky-500 font-bold uppercase tracking-widest text-[10px] bg-sky-50/30 hover:bg-sky-50">
                     <Filter className="w-3.5 h-3.5 mr-2" />
                     Reset List
                 </Button>
@@ -156,7 +156,7 @@ export default function InvoicesPage() {
                                     <tr>
                                         <td colSpan={5} className="px-8 py-20 text-center">
                                             <div className="flex flex-col items-center gap-4">
-                                                <Loader2 className="w-8 h-8 text-black animate-spin" />
+                                                <Loader2 className="w-8 h-8 text-sky-500 animate-spin" />
                                                 <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Syncing Records...</span>
                                             </div>
                                         </td>
@@ -181,9 +181,9 @@ export default function InvoicesPage() {
                                             <div className="space-y-2">
                                                 <span className="text-sm font-black text-gray-700 tracking-tight block uppercase">{invoice.vehicle_model}</span>
                                                 <div className="flex gap-4">
-                                                    <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded-md">
-                                                        <Hash className="w-2.5 h-2.5 text-gray-400" />
-                                                        <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter">Eng: {invoice.engine_number}</span>
+                                                    <div className="flex items-center gap-1.5 bg-sky-50 px-2 py-0.5 rounded-md">
+                                                        <Hash className="w-2.5 h-2.5 text-sky-300" />
+                                                        <span className="text-[9px] font-black text-sky-600 uppercase tracking-tighter">Eng: {invoice.engine_number}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -191,31 +191,25 @@ export default function InvoicesPage() {
                                         <td className="px-8 py-8">
                                             <div className="space-y-1">
                                                 <span className="text-base font-black text-black tracking-tighter block">{formatCurrency(invoice.total_amount)}</span>
-                                                <span className={cn(
-                                                    "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full inline-block",
-                                                    invoice.status === 'paid' ? "bg-black text-white" : "bg-gray-100 text-gray-400"
-                                                )}>
-                                                    {invoice.status}
-                                                </span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-8 text-right">
                                             <div className="flex justify-end gap-3">
                                                 <Link href={`/invoice/${invoice.id}`}>
-                                                    <Button variant="outline" size="sm" className="h-10 w-10 p-0 rounded-full border-gray-100 hover:border-black active:scale-90">
-                                                        <Eye className="w-4 h-4 text-gray-900" />
+                                                    <Button variant="outline" size="sm" className="h-10 w-10 p-0 rounded-full border-sky-50 bg-sky-50/30 hover:border-sky-500 hover:bg-sky-50 active:scale-90 transition-all">
+                                                        <Eye className="w-4 h-4 text-sky-600" />
                                                     </Button>
                                                 </Link>
-                                                <Button variant="outline" size="sm" className="h-10 w-10 p-0 rounded-full border-gray-100 hover:border-black active:scale-90">
-                                                    <Download className="w-4 h-4 text-gray-400 group-hover:text-black" />
+                                                <Button variant="outline" size="sm" className="h-10 w-10 p-0 rounded-full border-sky-50 bg-sky-50/30 hover:border-sky-500 hover:bg-sky-50 active:scale-90 transition-all">
+                                                    <Download className="w-4 h-4 text-sky-400 group-hover:text-sky-600" />
                                                 </Button>
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => handleDelete(invoice.id, invoice.invoice_number)}
-                                                    className="h-10 w-10 p-0 rounded-full border-gray-100 hover:border-red-500 hover:bg-red-50 active:scale-90 transition-all"
+                                                    className="h-10 w-10 p-0 rounded-full border-sky-50 bg-sky-50/30 hover:border-sky-600 hover:bg-sky-50 active:scale-90 transition-all"
                                                 >
-                                                    <Trash2 className="w-4 h-4 text-gray-400 group-hover:text-red-500" />
+                                                    <Trash2 className="w-4 h-4 text-sky-400 group-hover:text-sky-600" />
                                                 </Button>
                                             </div>
                                         </td>
