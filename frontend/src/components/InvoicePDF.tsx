@@ -15,50 +15,57 @@ Font.register({
     ]
 });
 
-// Define styles
+const themeColor = '#0EA5E9';
+
 const styles = StyleSheet.create({
     page: {
-        padding: 40,
+        paddingVertical: 24,
+        paddingHorizontal: 0,
         fontSize: 10,
         fontFamily: 'Inter',
         color: '#111827',
         backgroundColor: '#FFFFFF',
     },
+    section: {
+        marginHorizontal: 32,
+    },
     headerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 12,
-        paddingHorizontal: 15,
-        paddingTop: 10
+        marginBottom: 16,
+        paddingHorizontal: 32,
+        paddingTop: 12
     },
     labelInvoice: {
-        color: '#0EA5E9',
-        fontSize: 18,
+        color: themeColor,
+        fontSize: 16,
         fontWeight: 900,
-        letterSpacing: 2
+        letterSpacing: 2,
+        textTransform: 'uppercase'
     },
     labelRecipient: {
         fontSize: 7.5,
         color: '#9ca3af',
         fontWeight: 700,
-        letterSpacing: 1.5
+        letterSpacing: 1.5,
+        textTransform: 'uppercase'
     },
     brandingRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 15,
-        marginBottom: 25
+        paddingHorizontal: 32,
+        marginBottom: 32
     },
     companySection: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 16,
         flex: 1
     },
     logo: {
-        width: 50,
-        height: 50
+        width: 48,
+        height: 48
     },
     companyInfo: {
         flex: 1
@@ -68,23 +75,31 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         textTransform: 'uppercase',
         color: '#1a1a1a',
-        marginBottom: 0
+        marginBottom: 0,
+        letterSpacing: -0.5
     },
     companyTagline: {
         fontSize: 7,
         color: '#9ca3af',
         fontWeight: 700,
         textTransform: 'uppercase',
-        letterSpacing: 1.5,
+        letterSpacing: 1.4,
         marginTop: 2
     },
     companyDetails: {
         fontSize: 7.5,
         color: '#6b7280',
         lineHeight: 1.4,
-        marginTop: 8,
+        marginTop: 12,
         textTransform: 'uppercase',
-        fontWeight: 700
+        fontWeight: 700,
+        maxWidth: 320
+    },
+    addressDetails: {
+        fontSize: 6.8,
+        color: '#4b5563',
+        marginTop: 2,
+        fontWeight: 700,
     },
     contactSection: {
         textAlign: 'right'
@@ -96,33 +111,34 @@ const styles = StyleSheet.create({
         marginBottom: 2
     },
     estLabel: {
-        fontSize: 8,
+        fontSize: 7.5,
         color: '#d1d5db',
         fontWeight: 900,
         textTransform: 'uppercase',
-        letterSpacing: 3,
+        letterSpacing: 2,
         textAlign: 'right',
-        marginTop: 12
+        marginTop: 16,
+        transform: 'rotate(90deg)',
+        transformOrigin: 'right top',
     },
     infoGrid: {
         flexDirection: 'row',
         borderTop: 1,
         borderBottom: 1,
         borderColor: '#f3f4f6',
-        paddingVertical: 18,
-        paddingHorizontal: 20,
-        marginBottom: 25,
-        backgroundColor: '#f9fafb'
+        paddingVertical: 24,
+        marginBottom: 32,
+        backgroundColor: '#f9fafb',
+        paddingHorizontal: 32
     },
     infoCol: {
         flex: 1,
-        paddingRight: 15
+        paddingRight: 32
     },
     infoColBorder: {
         borderLeft: 1,
         borderColor: '#f3f4f6',
-        paddingLeft: 20,
-        paddingRight: 0
+        paddingLeft: 32
     },
     infoLabel: {
         fontSize: 7.5,
@@ -137,19 +153,26 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         color: '#000000'
     },
+    infoSubValue: {
+        fontSize: 8.5,
+        fontWeight: 700,
+        color: '#4b5563',
+        marginTop: 2
+    },
     carDetails: {
-        marginHorizontal: 15,
-        marginBottom: 25,
+        marginHorizontal: 32,
+        marginBottom: 32,
         borderBottom: 1,
         borderColor: '#f3f4f6',
-        paddingBottom: 12
+        paddingBottom: 16
     },
     carHeader: {
         fontSize: 8.5,
         fontWeight: 900,
-        marginBottom: 8,
+        marginBottom: 12,
         color: '#111827',
-        letterSpacing: 2
+        letterSpacing: 1.5,
+        textTransform: 'uppercase'
     },
     carGrid: {
         flexDirection: 'row',
@@ -159,7 +182,7 @@ const styles = StyleSheet.create({
         fontSize: 8.5,
         color: '#4b5563',
         fontWeight: 700,
-        marginBottom: 3,
+        marginBottom: 4,
         textTransform: 'uppercase'
     },
     carBoldValue: {
@@ -168,15 +191,16 @@ const styles = StyleSheet.create({
     },
     tableHeader: {
         flexDirection: 'row',
-        marginHorizontal: 15,
+        marginHorizontal: 32,
         borderBottom: 2,
         borderColor: '#000',
-        paddingBottom: 6,
+        paddingBottom: 8,
         marginBottom: 0,
         fontWeight: 900,
         fontSize: 8.5,
         letterSpacing: 1.5,
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        color: '#1a1a1a'
     },
     col1: { width: '8.33%' },
     col2: { width: '41.67%' },
@@ -184,8 +208,8 @@ const styles = StyleSheet.create({
     col4: { width: '25%', textAlign: 'right' },
     tableRow: {
         flexDirection: 'row',
-        marginHorizontal: 15,
-        paddingVertical: 15,
+        marginHorizontal: 32,
+        paddingVertical: 20,
         borderBottom: 1,
         borderColor: '#f3f4f6',
         alignItems: 'flex-start'
@@ -206,7 +230,7 @@ const styles = StyleSheet.create({
     itemSub: {
         fontSize: 7.5,
         color: '#9ca3af',
-        marginTop: 4,
+        marginTop: 6,
         fontWeight: 700,
         textTransform: 'uppercase',
         opacity: 0.7
@@ -227,19 +251,22 @@ const styles = StyleSheet.create({
     },
     totalsSection: {
         alignItems: 'flex-end',
-        marginHorizontal: 15,
-        marginTop: 20,
-        marginBottom: 30
+        marginHorizontal: 32,
+        marginTop: 24,
+        marginBottom: 48,
+        borderTop: 1,
+        borderColor: '#f3f4f6',
+        paddingTop: 24
     },
     totalRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: 200,
+        width: 192,
         backgroundColor: '#f9fafb',
-        padding: 12,
-        borderRadius: 8,
-        marginBottom: 10
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 16
     },
     totalLabel: {
         fontSize: 10.5,
@@ -261,7 +288,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         textAlign: 'right',
         letterSpacing: 1,
-        marginBottom: 2
+        marginBottom: 4
     },
     amountWords: {
         fontSize: 8.5,
@@ -269,53 +296,57 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         fontStyle: 'italic',
         color: '#111827',
-        width: 300
+        maxWidth: 288,
+        textTransform: 'uppercase'
     },
     metaRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 15,
-        marginTop: 10,
-        marginBottom: 30
+        marginHorizontal: 32,
+        marginTop: 8,
+        marginBottom: 48,
+        alignItems: 'flex-end'
     },
     notesSection: {
         width: '48%'
     },
     notesBox: {
         backgroundColor: '#f0f9ff',
-        padding: 10,
-        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 12,
+        borderRadius: 12,
         borderWidth: 1,
         borderColor: '#e0f2fe',
-        marginBottom: 10
+        marginBottom: 16
     },
     termsSection: {
         backgroundColor: '#f9fafb',
-        padding: 12,
-        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 16,
+        borderRadius: 12,
         borderWidth: 1,
         borderColor: '#f3f4f6'
     },
     termsHeader: {
         fontSize: 7.5,
         fontWeight: 900,
-        marginBottom: 6,
+        marginBottom: 8,
         textTransform: 'uppercase',
         color: '#111827',
         letterSpacing: 1
     },
     termItem: {
         flexDirection: 'row',
-        marginBottom: 2
+        marginBottom: 4
     },
     termIdx: {
-        fontSize: 6.5,
+        fontSize: 6,
         fontWeight: 900,
         color: '#d1d5db',
-        width: 10
+        marginRight: 8
     },
     termText: {
-        fontSize: 6.5,
+        fontSize: 6,
         color: '#6b7280',
         fontWeight: 700,
         textTransform: 'uppercase'
@@ -328,31 +359,31 @@ const styles = StyleSheet.create({
     authLabel: {
         fontSize: 9.5,
         fontWeight: 900,
-        marginBottom: 35,
+        marginBottom: 48,
         textTransform: 'uppercase',
-        color: '#111827'
+        color: '#1a110d'
     },
     authLine: {
-        width: 140,
+        width: 144,
         height: 1,
         backgroundColor: '#e5e7eb'
     },
     authSub: {
         fontSize: 7.5,
         color: '#9ca3af',
-        fontWeight: 700,
-        marginTop: 6,
+        fontWeight: 900,
+        marginTop: 8,
         textTransform: 'uppercase',
         letterSpacing: 1.5
     },
     footer: {
         marginTop: 'auto',
-        marginHorizontal: 15,
-        marginBottom: 10,
+        marginHorizontal: 32,
+        marginBottom: 24,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 20
+        paddingTop: 12
     },
     footerText: {
         fontSize: 7.5,
@@ -399,13 +430,18 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                             <Text style={styles.companyDetails}>
                                 Side Car For Two Wheeler Scooter & Bike, Four Wheel Attachment For Handicap, Auto Clutch & Hand Operate Kit of Four Wheels Cars
                             </Text>
-                            <View style={{ marginTop: 6, borderTop: 1, borderColor: '#f9fafb', paddingTop: 6 }}>
-                                <Text style={[styles.companyDetails, { marginTop: 0, fontSize: 6.8 }]}>
-                                    Work: Street No. 14, Ghanshyam Nagar Soc., Opp. New Shaktivijay, L.H. Road, SURAT.
+                            <View style={{ marginTop: 8, borderTop: 1, borderColor: '#f9fafb', paddingTop: 8 }}>
+                                <Text style={styles.addressDetails}>
+                                    <Text style={{ opacity: 0.4 }}>Work: </Text>Street No. 14, Ghanshyam Nagar Soc., Opp. New Shaktivijay, L.H. Road, SURAT.
                                 </Text>
-                                <Text style={[styles.companyDetails, { marginTop: 2, fontSize: 6.8 }]}>
-                                    Email: sevaautosales@gmail.com  |  Web: sevaautosales.vercel.app
-                                </Text>
+                                <View style={{ flexDirection: 'row', marginTop: 2, gap: 16 }}>
+                                    <Text style={styles.addressDetails}>
+                                        <Text style={{ opacity: 0.4 }}>Email: </Text>sevaautosales@gmail.com
+                                    </Text>
+                                    <Text style={styles.addressDetails}>
+                                        <Text style={{ opacity: 0.4 }}>Web: </Text>sevaautosales.vercel.app
+                                    </Text>
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -419,33 +455,33 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                 {/* Info Grid */}
                 <View style={styles.infoGrid}>
                     <View style={styles.infoCol}>
-                        <View style={{ marginBottom: 12 }}>
+                        <View style={{ marginBottom: 16 }}>
                             <Text style={styles.infoLabel}>Bill No.:</Text>
                             <Text style={styles.infoValue}>{data.invoice_number}</Text>
                         </View>
                         <View>
                             <Text style={styles.infoLabel}>Customer Details:</Text>
                             <Text style={styles.infoValue}>{data.customer_name}</Text>
-                            <Text style={{ fontSize: 8, fontWeight: 700, color: '#4b5563', marginTop: 3 }}>Ph: {data.customer_phone}</Text>
+                            <Text style={styles.infoSubValue}>Ph: {data.customer_phone}</Text>
                         </View>
                     </View>
                     <View style={[styles.infoCol, styles.infoColBorder]}>
-                        <View style={{ marginBottom: 12 }}>
+                        <View style={{ marginBottom: 16 }}>
                             <Text style={styles.infoLabel}>Date:</Text>
                             <Text style={styles.infoValue}>{formattedDate}</Text>
                         </View>
                         <View>
                             <Text style={styles.infoLabel}>Billing Address:</Text>
-                            <Text style={{ fontSize: 8, fontWeight: 700, color: '#4b5563', lineHeight: 1.2 }}>{data.billing_address}</Text>
-                            <Text style={{ fontSize: 8, fontWeight: 700, color: '#4b5563', marginTop: 2 }}>{data.customer_address}</Text>
+                            <Text style={styles.infoSubValue}>{data.billing_address}</Text>
+                            <Text style={[styles.infoSubValue, { marginTop: 4 }]}>{data.customer_address}</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Car Details */}
                 <View style={styles.carDetails}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                        <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#0EA5E9', marginRight: 6 }} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: themeColor, marginRight: 8 }} />
                         <Text style={styles.carHeader}>VEHICLE DETAILS:-</Text>
                     </View>
                     <View style={styles.carGrid}>
@@ -498,8 +534,8 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                     <View style={styles.notesSection}>
                         {data.notes ? (
                             <View style={styles.notesBox}>
-                                <Text style={[styles.infoLabel, { color: '#0EA5E9', marginBottom: 2 }]}>Notes:</Text>
-                                <Text style={{ fontSize: 8, fontWeight: 900, fontStyle: 'italic' }}>{data.notes}</Text>
+                                <Text style={[styles.infoLabel, { color: themeColor, marginBottom: 4 }]}>Notes:</Text>
+                                <Text style={{ fontSize: 8.5, fontWeight: 900, fontStyle: 'italic', textTransform: 'uppercase', lineHeight: 1.4 }}>{data.notes}</Text>
                             </View>
                         ) : null}
 
