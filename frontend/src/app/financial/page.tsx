@@ -47,69 +47,94 @@ export default function FinancialPage() {
     const fetchFinancialData = async () => {
         setIsLoading(true);
         try {
-            const { data, error } = await supabase
-                .from('invoices')
-                .select('*');
-
-            if (error) throw error;
-            const invoicesList: Invoice[] = data || [];
-            setInvoices(invoicesList);
-
-            let chartData: any[] = [];
-            let growth = 0;
+            let start: Date, end: Date;
+            let prevStart: Date, prevEnd: Date;
 
             if (viewMode === 'week') {
-                const start = startOfWeek(referenceDate, { weekStartsOn: 1 });
-                const end = endOfWeek(referenceDate, { weekStartsOn: 1 });
-                const days = eachDayOfInterval({ start, end });
+                start = startOfWeek(referenceDate, { weekStartsOn: 1 });
+                end = endOfWeek(referenceDate, { weekStartsOn: 1 });
+                prevStart = subWeeks(start, 1);
+                prevEnd = subWeeks(end, 1);
+            } else {
+                start = startOfMonth(referenceDate);
+                end = endOfMonth(referenceDate);
+                prevStart = startOfMonth(subMonths(start, 1));
+                prevEnd = endOfMonth(subMonths(start, 1));
+            }
 
+            // Fetch current period data - only necessary columns
+            const { data: currentData, error: currentError } = await supabase
+                .from('invoices')
+                .select('total_amount, invoice_date, created_at, customer_phone')
+                .gte('invoice_date', format(start, 'yyyy-MM-dd'))
+                .lte('invoice_date', format(end, 'yyyy-MM-dd'));
+
+            if (currentError) throw currentError;
+            const currentInvoices = currentData || [];
+
+            // Fetch previous period total for growth calculation
+            const { data: prevData, error: prevError } = await supabase
+                .from('invoices')
+                .select('total_amount')
+                .gte('invoice_date', format(prevStart, 'yyyy-MM-dd'))
+                .lte('invoice_date', format(prevEnd, 'yyyy-MM-dd'));
+
+            if (prevError) throw prevError;
+            const prevTotal = (prevData || []).reduce((sum: number, inv: any) => sum + Number(inv.total_amount), 0);
+
+            // Fetch total clients (this still needs all or a separate count query for performance)
+            const { count: clientCount, error: countError } = await supabase
+                .from('invoices')
+                .select('*', { count: 'exact', head: true });
+
+            if (countError) throw countError;
+
+            // Fetch recent transactions (limited to 8)
+            const { data: recentData, error: recentError } = await supabase
+                .from('invoices')
+                .select('customer_name, invoice_number, total_amount, invoice_date, created_at')
+                .order('invoice_date', { ascending: false })
+                .limit(8);
+
+            if (recentError) throw recentError;
+            setInvoices(recentData || []);
+
+            let chartData: any[] = [];
+            const currentTotal = (currentInvoices as any[]).reduce((sum: number, inv: any) => sum + Number(inv.total_amount), 0);
+
+            if (viewMode === 'week') {
+                const days = eachDayOfInterval({ start, end });
                 chartData = days.map(day => ({
                     name: format(day, 'EEE'),
-                    total: invoicesList.reduce((sum: number, inv: Invoice) => {
+                    subtitle: format(day, 'd MMM'),
+                    total: (currentInvoices as any[]).reduce((sum: number, inv: any) => {
                         const invDate = parseISO(inv.invoice_date || inv.created_at);
                         return isSameDay(invDate, day) ? sum + Number(inv.total_amount) : sum;
                     }, 0)
                 }));
-
-                // Growth vs previous week
-                const prevWeekStart = subWeeks(start, 1);
-                const prevWeekEnd = subWeeks(end, 1);
-                const currentTotal = chartData.reduce((s: number, d: any) => s + d.total, 0);
-                const prevTotal = invoicesList.reduce((sum: number, inv: Invoice) => {
-                    const invDate = parseISO(inv.invoice_date || inv.created_at);
-                    return (invDate >= prevWeekStart && invDate <= prevWeekEnd) ? sum + Number(inv.total_amount) : sum;
-                }, 0);
-                growth = prevTotal > 0 ? ((currentTotal - prevTotal) / prevTotal) * 100 : 0;
-
             } else {
-                const start = startOfMonth(referenceDate);
-                const end = endOfMonth(referenceDate);
-                // Group by week for the month
                 const weeks = eachWeekOfInterval({ start, end }, { weekStartsOn: 1 });
-
-                chartData = weeks.map((week, idx) => ({
-                    name: `Week ${idx + 1}`,
-                    total: invoicesList.reduce((sum: number, inv: Invoice) => {
-                        const invDate = parseISO(inv.invoice_date || inv.created_at);
-                        return isSameWeek(invDate, week, { weekStartsOn: 1 }) &&
-                            invDate >= start && invDate <= end ? sum + Number(inv.total_amount) : sum;
-                    }, 0)
-                }));
-
-                // Growth vs previous month
-                const prevMonth = subMonths(start, 1);
-                const currentTotal = chartData.reduce((s: number, d: any) => s + d.total, 0);
-                const prevTotal = invoicesList.reduce((sum: number, inv: Invoice) => {
-                    const invDate = parseISO(inv.invoice_date || inv.created_at);
-                    return isSameMonth(invDate, prevMonth) ? sum + Number(inv.total_amount) : sum;
-                }, 0);
-                growth = prevTotal > 0 ? ((currentTotal - prevTotal) / prevTotal) * 100 : 0;
+                chartData = weeks.map((week, idx) => {
+                    const weekEnd = endOfWeek(week, { weekStartsOn: 1 });
+                    const displayEnd = weekEnd > end ? end : weekEnd;
+                    return {
+                        name: `Week ${idx + 1}`,
+                        subtitle: `${format(week, 'd')} - ${format(displayEnd, 'd MMM')}`,
+                        total: (currentInvoices as any[]).reduce((sum: number, inv: any) => {
+                            const invDate = parseISO(inv.invoice_date || inv.created_at);
+                            return isSameWeek(invDate, week, { weekStartsOn: 1 }) &&
+                                invDate >= start && invDate <= end ? sum + Number(inv.total_amount) : sum;
+                        }, 0)
+                    };
+                });
             }
+
+            const growth = prevTotal > 0 ? ((currentTotal - prevTotal) / prevTotal) * 100 : 0;
 
             setMonthlyData(chartData);
             setStats({
-                totalSales: invoicesList.reduce((sum: number, inv: Invoice) => sum + Number(inv.total_amount), 0),
-                activeClients: new Set(invoicesList.map((inv: Invoice) => inv.customer_phone)).size,
+                totalSales: currentTotal, // Revenue for SELECTED period
+                activeClients: clientCount || 0,
                 growth
             });
         } catch (error: any) {
@@ -259,7 +284,7 @@ export default function FinancialPage() {
                                 >
                                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all z-20">
                                         <div className="bg-black text-white px-3 py-2 rounded-xl shadow-2xl scale-110">
-                                            <p className="text-[8px] font-black text-gray-400 uppercase tracking-tighter mb-0.5">{d.name}</p>
+                                            <p className="text-[8px] font-black text-gray-400 uppercase tracking-tighter mb-0.5">{d.subtitle || d.name}</p>
                                             <p className="text-[10px] font-black uppercase tracking-tighter whitespace-nowrap">
                                                 {formatCurrency(d.total)}
                                             </p>

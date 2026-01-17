@@ -21,28 +21,71 @@ const CATEGORIES = [
 
 export default function HistoryPage() {
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('all');
     const [invoices, setInvoices] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const ITEMS_PER_PAGE = 20;
+
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     useEffect(() => {
-        fetchHistory();
-    }, []);
+        setInvoices([]);
+        setPage(0);
+        setHasMore(true);
+        fetchHistory(0, true);
+    }, [debouncedSearch, activeCategory]);
 
-    const fetchHistory = async () => {
-        setIsLoading(true);
+    const fetchHistory = async (pageNumber: number, isInitial = false) => {
+        if (isInitial) setIsLoading(true);
+        else setIsFetchingMore(true);
+
         try {
-            const { data, error } = await supabase
+            let query = supabase
                 .from('invoices')
-                .select('*')
-                .order('created_at', { ascending: false });
+                .select('*', { count: 'exact' })
+                .order('invoice_date', { ascending: false })
+                .range(pageNumber * ITEMS_PER_PAGE, (pageNumber + 1) * ITEMS_PER_PAGE - 1);
+
+            if (debouncedSearch) {
+                query = query.or(`customer_name.ilike.%${debouncedSearch}%,car_model.ilike.%${debouncedSearch}%,invoice_number.ilike.%${debouncedSearch}%`);
+            }
+
+            // Note: Category filtering is complex because it's inside the 'items' JSONB column.
+            // For now, we'll keep the client-side category filter for the current batch OR 
+            // handle it with a limited 'items' search if possible.
+            // Given the schema, client-side category filtering on the fetched batch is safer.
+
+            const { data, error, count } = await query;
 
             if (error) throw error;
-            setInvoices(data || []);
+
+            const newInvoices = data || [];
+
+            setInvoices(prev => isInitial ? newInvoices : [...prev, ...newInvoices]);
+            setHasMore(count ? (pageNumber + 1) * ITEMS_PER_PAGE < count : false);
         } catch (error: any) {
             console.error('Error fetching history:', error);
         } finally {
             setIsLoading(false);
+            setIsFetchingMore(false);
+        }
+    };
+
+    const loadMore = () => {
+        if (hasMore && !isFetchingMore) {
+            const nextPage = page + 1;
+            setPage(nextPage);
+            fetchHistory(nextPage);
         }
     };
 
@@ -57,16 +100,11 @@ export default function HistoryPage() {
         return 'Modifications';
     };
 
+    // Client-side category filtering on the accumulated batches
     const filteredInvoices = invoices.filter(inv => {
-        const matchesSearch =
-            inv.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            inv.car_model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            inv.invoice_number?.toLowerCase().includes(searchQuery.toLowerCase());
-
-        if (activeCategory === 'all') return matchesSearch;
-
+        if (activeCategory === 'all') return true;
         const itemNames = (inv.items || []).map((i: any) => i.description.toLowerCase()).join(' ');
-        return matchesSearch && itemNames.includes(activeCategory);
+        return itemNames.includes(activeCategory);
     });
 
     return (
@@ -172,6 +210,29 @@ export default function HistoryPage() {
                             </Card>
                         </Link>
                     ))}
+                </div>
+            )}
+
+            {hasMore && (
+                <div className="flex justify-center pt-8">
+                    <Button
+                        onClick={loadMore}
+                        disabled={isFetchingMore}
+                        variant="outline"
+                        className="px-12 py-6 rounded-2xl border-2 border-gray-100 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-sky-500 hover:text-white hover:border-sky-500 transition-all group scale-100 hover:scale-105 active:scale-95"
+                    >
+                        {isFetchingMore ? (
+                            <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Indexing...
+                            </>
+                        ) : (
+                            <>
+                                Load More Records
+                                <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
+                    </Button>
                 </div>
             )}
 
