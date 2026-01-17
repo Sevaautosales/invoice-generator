@@ -55,8 +55,6 @@ export default function InvoicesPage() {
 
             if (error) throw error;
             setInvoices(data || []);
-        } catch (error: any) {
-            console.error('Error fetching invoices:', error);
         } finally {
             setIsLoading(false);
         }
@@ -84,7 +82,6 @@ export default function InvoicesPage() {
                     });
                     fetchInvoices();
                 } catch (error: any) {
-                    console.error('Error deleting invoice:', error);
                     setAlertDialog({
                         isOpen: true,
                         title: 'Error',

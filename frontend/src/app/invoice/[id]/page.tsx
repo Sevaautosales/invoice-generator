@@ -35,7 +35,6 @@ export default function InvoiceDetailsPage() {
             if (error) throw error;
             setInvoice(data);
         } catch (error: any) {
-            console.error('Error fetching invoice:', error);
         } finally {
             setIsLoading(false);
         }

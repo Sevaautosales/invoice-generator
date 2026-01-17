@@ -223,7 +223,6 @@ export default function InvoiceForm() {
 
             handleClear();
         } catch (error: any) {
-            console.error('Error saving invoice:', error);
             setAlertDialog({
                 isOpen: true,
                 title: 'Error',
@@ -245,9 +244,6 @@ export default function InvoiceForm() {
                     </div>
                     <h2 className="text-4xl font-black text-black tracking-tighter uppercase">New Invoice</h2>
                     <p className="text-gray-400 font-medium mt-1 text-sm uppercase tracking-wider">Seva Auto Sales Professional Billing</p>
-                </div>
-                <div className="flex gap-4">
-                    {/* Buttons moved to Summary block */}
                 </div>
             </div>
 

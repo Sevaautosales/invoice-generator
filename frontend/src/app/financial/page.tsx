@@ -138,7 +138,6 @@ export default function FinancialPage() {
                 growth
             });
         } catch (error: any) {
-            console.error('Error fetching financial data:', error);
         } finally {
             setIsLoading(false);
         }

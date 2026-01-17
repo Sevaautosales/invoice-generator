@@ -109,10 +109,7 @@ class MockSupabase {
     }
 }
 
+
 export const supabase = isMock
     ? (new MockSupabase() as any)
     : createClient(supabaseUrl, supabaseAnonKey);
-
-if (isMock) {
-    console.warn('Supabase credentials missing. Seva Auto Sales is running in MOCK MODE (localStorage).');
-}

@@ -60,10 +60,6 @@ export default function HistoryPage() {
                 query = query.or(`customer_name.ilike.%${debouncedSearch}%,car_model.ilike.%${debouncedSearch}%,invoice_number.ilike.%${debouncedSearch}%`);
             }
 
-            // Note: Category filtering is complex because it's inside the 'items' JSONB column.
-            // For now, we'll keep the client-side category filter for the current batch OR 
-            // handle it with a limited 'items' search if possible.
-            // Given the schema, client-side category filtering on the fetched batch is safer.
 
             const { data, error, count } = await query;
 
@@ -74,7 +70,6 @@ export default function HistoryPage() {
             setInvoices(prev => isInitial ? newInvoices : [...prev, ...newInvoices]);
             setHasMore(count ? (pageNumber + 1) * ITEMS_PER_PAGE < count : false);
         } catch (error: any) {
-            console.error('Error fetching history:', error);
         } finally {
             setIsLoading(false);
             setIsFetchingMore(false);

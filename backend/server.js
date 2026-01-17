@@ -26,7 +26,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Backend is running', mockMode: !supabase });
 });
 
-// Example route for invoices (logic to be expanded)
+// Invoices API
 app.get('/api/invoices', async (req, res) => {
   if (!supabase) {
     return res.json({ 
@@ -49,5 +49,5 @@ app.get('/api/invoices', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
