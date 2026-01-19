@@ -268,33 +268,43 @@ export default function FinancialPage() {
                             </p>
                         </div>
                     </div>
-                    <CardContent className="h-[400px] flex items-end justify-between p-12 gap-4 relative">
+                    <CardContent className="h-[400px] p-0 relative">
                         {isLoading ? (
-                            <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
+                            <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20 rounded-b-xl">
                                 <Loader2 className="w-8 h-8 text-sky-500 animate-spin" />
                             </div>
                         ) : null}
 
-                        {monthlyData.map((d, i) => (
-                            <div key={i} className="flex-1 group relative h-full flex flex-col justify-end">
+                        <div className="w-full h-full flex items-end gap-2 md:gap-4 overflow-x-auto px-4 md:px-12 pb-4 md:pb-12 pt-20 snap-x hide-scrollbar">
+                            {monthlyData.map((d, i) => (
                                 <div
-                                    className="w-full bg-sky-50 rounded-t-xl transition-all duration-700 group-hover:bg-sky-500 relative"
-                                    style={{ height: `${(d.total / maxVal) * 100}%`, minHeight: '4px' }}
+                                    key={i}
+                                    className="flex-1 min-w-[30px] md:min-w-0 group/bar relative h-full flex flex-col justify-end snap-center focus:outline-none"
+                                    tabIndex={0}
                                 >
-                                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all z-20">
-                                        <div className="bg-black text-white px-3 py-2 rounded-xl shadow-2xl scale-110">
-                                            <p className="text-[8px] font-black text-gray-400 uppercase tracking-tighter mb-0.5">{d.subtitle || d.name}</p>
-                                            <p className="text-[10px] font-black uppercase tracking-tighter whitespace-nowrap">
-                                                {formatCurrency(d.total)}
-                                            </p>
+                                    <div
+                                        className="w-full bg-sky-50 rounded-t-xl transition-all duration-700 group-hover/bar:bg-sky-500 group-focus/bar:bg-sky-500 group-active/bar:bg-sky-500 relative cursor-pointer"
+                                        style={{ height: `${(d.total / maxVal) * 100}%`, minHeight: '4px' }}
+                                    >
+                                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 group-focus/bar:opacity-100 group-active/bar:opacity-100 z-30 pointer-events-none sticky-tooltip-fix">
+                                            <div className="bg-black text-white px-3 py-2 rounded-xl shadow-2xl scale-110 min-w-max">
+                                                <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-0.5 whitespace-nowrap">{d.subtitle || d.name}</p>
+                                                <p className="text-[11px] font-black uppercase tracking-tighter whitespace-nowrap text-white">
+                                                    {formatCurrency(d.total)}
+                                                </p>
+                                            </div>
+                                            <div className="w-2 h-2 bg-black rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
                                         </div>
                                     </div>
+                                    <div className="mt-4 text-[9px] font-black text-gray-300 uppercase text-center tracking-widest group-hover/bar:text-sky-600 group-focus/bar:text-sky-600 transition-colors hidden md:block">
+                                        {d.name}
+                                    </div>
+                                    <div className="mt-2 text-[8px] font-black text-gray-300 uppercase text-center tracking-widest group-hover/bar:text-sky-600 group-focus/bar:text-sky-600 transition-colors block md:hidden">
+                                        {d.name.slice(0, 3)}
+                                    </div>
                                 </div>
-                                <div className="mt-4 text-[9px] font-black text-gray-300 uppercase text-center tracking-widest group-hover:text-sky-600 transition-colors">
-                                    {d.name}
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </CardContent>
                 </Card>
 

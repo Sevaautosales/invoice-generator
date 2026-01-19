@@ -68,35 +68,44 @@ export default function InvoiceForm() {
         const today = new Date();
         const year = String(today.getFullYear()).slice(-2);
         const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const dateString = `${year}${month}${day}`;
+        const dateString = `${year}${month}`;
 
         try {
-            // Fetch all invoices from today to find true max sequence
+            // Fetch all invoices from this month
+            // We only look for sequences that match the new format YYMMSS (Length 6)
+            // Existing legacy invoices are YYMMDDS (Length 7) -> We must ignore them
             const { data, error } = await supabase
                 .from('invoices')
                 .select('invoice_number')
                 .like('invoice_number', `${dateString}%`);
 
             let nextNumber = 1;
+
             if (data && data.length > 0) {
-                const sequences = data.map((inv: { invoice_number: string }) => {
-                    const seq = inv.invoice_number.substring(dateString.length);
-                    return parseInt(seq) || 0;
-                });
-                nextNumber = Math.max(...sequences) + 1;
+                const sequences = data
+                    .filter((inv: { invoice_number: string }) => inv.invoice_number.length === 6) // STRICT FILTER for new format
+                    .map((inv: { invoice_number: string }) => {
+                        const seq = inv.invoice_number.substring(dateString.length);
+                        return parseInt(seq) || 0;
+                    });
+
+                if (sequences.length > 0) {
+                    nextNumber = Math.max(...sequences) + 1;
+                }
             }
+
+            const paddedSequence = String(nextNumber).padStart(2, '0');
 
             setFormData(prev => ({
                 ...prev,
-                invoice_number: `${dateString}${nextNumber}`
+                invoice_number: `${dateString}${paddedSequence}`
             }));
         } catch (error) {
             console.error('Error generating invoice number:', error);
-            // Fallback if error
+            // Fallback
             setFormData(prev => ({
                 ...prev,
-                invoice_number: `${dateString}1`
+                invoice_number: `${dateString}01`
             }));
         }
     };
@@ -117,14 +126,7 @@ export default function InvoiceForm() {
         };
 
         // If selecting from preset
-        if (field === 'description') {
-            const preset = PRESET_ITEMS.find(p => p.description === value);
-            if (preset) {
-                newItems[index].mrp = preset.mrp;
-                newItems[index].selling_price = preset.selling_price;
-                newItems[index].amount = preset.selling_price;
-            }
-        }
+        // Autofill removed as per user request
 
         if (field === 'selling_price') {
             newItems[index].amount = Number(value);
@@ -267,7 +269,7 @@ export default function InvoiceForm() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 pt-5 md:pt-8 px-4 md:px-6">
                             <Input
                                 label="Customer Name"
                                 name="customer_name"
@@ -340,7 +342,7 @@ export default function InvoiceForm() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 pt-5 md:pt-8 px-4 md:px-6">
                             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <Input
                                     label="Vehicle Model"
@@ -412,17 +414,33 @@ export default function InvoiceForm() {
                                 </Button>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-6 pt-8">
+                        <CardContent className="space-y-4 pt-5 md:pt-8 px-4 md:px-6">
+                            {/* Table Headers (Desktop Only) */}
+                            <div className="hidden md:grid grid-cols-12 gap-4 px-1 mb-2">
+                                <div className="col-span-1 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center self-end pb-2">#</div>
+                                <div className="col-span-4 text-[10px] font-black text-gray-400 uppercase tracking-widest self-end pb-2">Item Details</div>
+                                <div className="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest self-end pb-2">MRP</div>
+                                <div className="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest self-end pb-2">Rate</div>
+                                <div className="col-span-2 text-[10px] font-black text-gray-400 uppercase tracking-widest self-end pb-2">Total</div>
+                                <div className="col-span-1"></div>
+                            </div>
+
                             {formData.items.map((item, index) => (
-                                <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end border-b border-gray-50 pb-6 last:border-0 last:pb-0">
-                                    <div className="md:col-span-1 text-[10px] font-black text-gray-400 uppercase">
-                                        #{index + 1}
-                                    </div>
-                                    <div className="md:col-span-4">
-                                        <div className="space-y-1.5">
-                                            <label className="text-sm font-semibold text-gray-700 ml-1">Select Item</label>
+                                <div key={index} className="space-y-3">
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start md:items-center bg-gray-50/30 p-4 md:p-0 rounded-2xl md:bg-transparent border md:border-0 border-gray-100 relative group">
+
+                                        {/* Index */}
+                                        <div className="md:col-span-1 flex md:justify-center">
+                                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-[10px] font-bold text-gray-500">
+                                                {index + 1}
+                                            </span>
+                                        </div>
+
+                                        {/* Description Select */}
+                                        <div className="md:col-span-4">
+                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block md:hidden">Select Item</label>
                                             <select
-                                                className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 transition-all font-medium"
+                                                className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 transition-all font-medium appearance-none"
                                                 value={PRESET_ITEMS.some(p => p.description === item.description) ? item.description : 'custom'}
                                                 onChange={(e) => {
                                                     const val = e.target.value;
@@ -439,58 +457,70 @@ export default function InvoiceForm() {
                                                 ))}
                                             </select>
                                         </div>
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            label="MRP"
-                                            type="number"
-                                            value={item.mrp || ''}
-                                            onChange={(e) => handleItemChange(index, 'mrp', e.target.value)}
-                                            placeholder="0"
-                                            className="bg-gray-50/50 border-gray-100"
-                                        />
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            label="Selling Price"
-                                            type="number"
-                                            value={item.selling_price || ''}
-                                            onChange={(e) => handleItemChange(index, 'selling_price', e.target.value)}
-                                            placeholder="0"
-                                            className="bg-gray-50/50 border-gray-100"
-                                        />
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <Input
-                                            label="Total"
-                                            type="number"
-                                            value={item.amount || ''}
-                                            readOnly
-                                            placeholder="0"
-                                            className="bg-sky-50/30 border-sky-100 font-bold"
-                                        />
-                                    </div>
-                                    <div className="md:col-span-1">
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => removeItem(index)}
-                                            disabled={formData.items.length === 1}
-                                            className="text-sky-500 border-sky-50 hover:bg-sky-50 w-full rounded-xl"
-                                        >
-                                            ✕
-                                        </Button>
-                                    </div>
-                                    {!PRESET_ITEMS.some(p => p.description === item.description) && (
-                                        <div className="md:col-span-12 mt-2">
+
+                                        {/* MRP */}
+                                        <div className="md:col-span-2">
+                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block md:hidden">MRP</label>
                                             <Input
-                                                label="Custom Description"
-                                                value={item.description}
-                                                onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                                                placeholder="Enter custom item name..."
-                                                className="bg-white border-gray-200"
+                                                type="number"
+                                                value={item.mrp || ''}
+                                                onChange={(e) => handleItemChange(index, 'mrp', e.target.value)}
+                                                placeholder="0"
+                                                className="bg-gray-50/50 border-gray-100 focus:bg-white text-gray-500"
                                             />
+                                        </div>
+
+                                        {/* Selling Price */}
+                                        <div className="md:col-span-2">
+                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block md:hidden">Selling Price</label>
+                                            <Input
+                                                type="number"
+                                                value={item.selling_price || ''}
+                                                onChange={(e) => handleItemChange(index, 'selling_price', e.target.value)}
+                                                placeholder="0"
+                                                className="bg-gray-50/50 border-gray-100 focus:bg-white font-semibold text-gray-900"
+                                            />
+                                        </div>
+
+                                        {/* Total */}
+                                        <div className="md:col-span-2">
+                                            <label className="text-xs font-bold text-gray-500 mb-1.5 block md:hidden">Total</label>
+                                            <Input
+                                                type="number"
+                                                value={item.amount || ''}
+                                                readOnly
+                                                placeholder="0"
+                                                className="bg-sky-50/30 border-sky-100 font-bold text-black cursor-default focus:ring-0"
+                                            />
+                                        </div>
+
+                                        {/* Remove Button */}
+                                        <div className="md:col-span-1 absolute md:static top-2 right-2 flex md:justify-center">
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => removeItem(index)}
+                                                disabled={formData.items.length === 1}
+                                                className="text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors h-10 w-10 p-0 md:h-12 md:w-12"
+                                            >
+                                                <span className="text-xl leading-none">×</span>
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Custom Description Input */}
+                                    {!PRESET_ITEMS.some(p => p.description === item.description) && (
+                                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-1 animate-in slide-in-from-top-2 fade-in">
+                                            <div className="md:col-span-1"></div>
+                                            <div className="md:col-span-11">
+                                                <Input
+                                                    value={item.description}
+                                                    onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                                                    placeholder="Enter custom item description..."
+                                                    className="bg-yellow-50/50 border-yellow-100 focus:bg-white text-xs"
+                                                />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -513,7 +543,7 @@ export default function InvoiceForm() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-8 pt-8 px-8">
+                        <CardContent className="space-y-8 pt-6 px-5 md:pt-8 md:px-8">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Info className="w-3.5 h-3.5 text-gray-300" />

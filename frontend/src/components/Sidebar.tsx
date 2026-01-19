@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ReceiptText, IndianRupee, History, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, IndianRupee, History, Menu, X, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -91,7 +91,18 @@ export default function Sidebar() {
                     })}
                 </nav>
 
-                {/* Status section removed */}
+                <div className="p-4 border-t mt-auto">
+                    <button
+                        onClick={async () => {
+                            await fetch('/api/auth/logout', { method: 'POST' });
+                            window.location.href = '/login';
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group"
+                    >
+                        <LogOut className="w-5 h-5 transition-colors text-gray-400 group-hover:text-red-600" />
+                        <span className="font-bold text-sm tracking-tight">Logout</span>
+                    </button>
+                </div>
             </div>
         </>
     );

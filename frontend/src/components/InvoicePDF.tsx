@@ -19,119 +19,121 @@ const themeColor = '#0EA5E9';
 
 const styles = StyleSheet.create({
     page: {
-        paddingVertical: 16,
+        paddingVertical: 20, // Preview has padding inside Card, but page allows bleeding.
         paddingHorizontal: 0,
-        fontSize: 10,
-        fontFamily: 'Inter',
-        color: '#111827',
         backgroundColor: '#FFFFFF',
+        fontFamily: 'Inter',
     },
+    // Preview uses px-8 (32px) -> 32 * 0.7 = 22.4
     section: {
-        marginHorizontal: 32,
+        marginHorizontal: 22,
     },
+    // Header: px-8 (32px), pt-6 (24px)
     headerRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-        paddingHorizontal: 32,
-        paddingTop: 12
+        alignItems: 'flex-start',
+        marginBottom: 11, // mb-4 (16px * 0.7)
+        paddingHorizontal: 22,
+        paddingTop: 17
     },
     labelInvoice: {
         color: themeColor,
-        fontSize: 20,
+        fontSize: 14, // text-xl (20px * 0.7)
         fontWeight: 900,
-        letterSpacing: 2,
+        letterSpacing: 2, // tracking-widest
         textTransform: 'uppercase'
     },
     labelRecipient: {
-        fontSize: 10,
+        fontSize: 7, // text-[10px] * 0.7
         color: '#9ca3af',
-        fontWeight: 700,
+        fontWeight: 900,
         letterSpacing: 1.5,
         textTransform: 'uppercase'
     },
+    // Branding: px-8 (32px), mb-8 (32px)
     brandingRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 32,
-        marginBottom: 16,
+        paddingHorizontal: 22,
+        marginBottom: 22,
         position: 'relative'
     },
     companySection: {
         flexDirection: 'row',
-        alignItems: 'center',
-        gap: 16,
+        alignItems: 'flex-start',
+        gap: 11, // gap-4 (16px * 0.7)
         flex: 1
     },
     logo: {
-        width: 64,
-        height: 64
+        width: 56, // w-20 (80px * 0.7 = 56)
+        height: 56
     },
     companyInfo: {
         flex: 1
     },
     companyName: {
-        fontSize: 34,
+        fontSize: 25, // text-4xl (36px * 0.7 = 25.2)
         fontWeight: 900,
         textTransform: 'uppercase',
         color: '#1a1a1a',
-        letterSpacing: -1,
+        letterSpacing: -1, // tracking-tighter
         lineHeight: 1
     },
     companyTagline: {
-        fontSize: 9,
+        fontSize: 6.5, // text-[9px] * 0.7
         color: '#9ca3af',
-        fontWeight: 700,
+        fontWeight: 900,
         textTransform: 'uppercase',
-        letterSpacing: 1.5,
-        marginTop: 2
+        letterSpacing: 1.4, // tracking-[0.2em]
+        marginTop: 4
     },
     companyDetails: {
-        fontSize: 10,
-        color: '#4b5563',
+        fontSize: 7, // text-[10px] * 0.7
+        color: '#6b7280', // gray-500
         lineHeight: 1.3,
-        marginTop: 8,
+        marginTop: 4, // space-y-1
         textTransform: 'uppercase',
         fontWeight: 700,
-        maxWidth: 400
+        maxWidth: 280
     },
     addressDetails: {
-        fontSize: 9,
+        fontSize: 6.5, // 9px * 0.7
         color: '#4b5563',
-        marginTop: 1,
+        marginTop: 2,
         fontWeight: 700,
     },
     contactSection: {
         textAlign: 'right',
-        paddingRight: 24
+        paddingRight: 0
     },
     contactText: {
-        fontSize: 14,
+        fontSize: 9.8, // text-sm (14px * 0.7)
         fontWeight: 900,
         color: '#1a1a1a',
         marginBottom: 2
     },
     estLabel: {
-        fontSize: 10,
-        color: '#d1d5db',
+        fontSize: 7, // text-[10px]
+        color: '#d1d5db', // gray-300
         fontWeight: 900,
         textTransform: 'uppercase',
-        letterSpacing: 3,
+        letterSpacing: 2,
         position: 'absolute',
         right: 0,
-        top: 24,
+        top: 28,
         transform: 'rotate(90deg)',
     },
+    // Info Grid: py-6 (24px * 0.7 = 16.8), mx-8 (22)
     infoGrid: {
         flexDirection: 'row',
         borderTop: 1,
         borderBottom: 1,
-        borderColor: '#f3f4f6',
-        paddingVertical: 12,
-        marginBottom: 16,
-        backgroundColor: '#f9fafb',
-        paddingHorizontal: 32
+        borderColor: '#f3f4f6', // gray-100
+        paddingVertical: 17,
+        marginBottom: 22,
+        backgroundColor: 'rgba(249, 250, 251, 0.3)',
+        marginHorizontal: 22
     },
     infoCol: {
         flex: 1,
@@ -140,66 +142,70 @@ const styles = StyleSheet.create({
     infoColBorder: {
         borderLeft: 1,
         borderColor: '#f3f4f6',
-        paddingLeft: 32
+        paddingLeft: 22 // pl-8 (32 * 0.7)
     },
     infoLabel: {
-        fontSize: 10,
-        color: '#9ca3af',
+        fontSize: 7, // text-[10px]
+        color: '#9ca3af', // gray-400
         fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 1.5,
-        marginBottom: 2
+        marginBottom: 0
     },
     infoValue: {
-        fontSize: 14,
+        fontSize: 9.8, // text-[14px]
         fontWeight: 900,
         color: '#000000'
     },
     infoSubValue: {
-        fontSize: 11,
+        fontSize: 7.7, // text-[11px]
         fontWeight: 700,
         color: '#4b5563',
-        marginTop: 1
+        marginTop: 2,
+        textTransform: 'uppercase'
     },
+    // Car Details: mx-8 (22), mb-8 (22)
     carDetails: {
-        marginHorizontal: 32,
-        marginBottom: 16,
-        borderBottom: 1,
-        borderColor: '#f3f4f6',
-        paddingBottom: 8
+        marginHorizontal: 22,
+        marginBottom: 22,
     },
     carHeader: {
-        fontSize: 11,
+        fontSize: 7.7, // text-[11px]
         fontWeight: 900,
         marginBottom: 8,
         color: '#111827',
         letterSpacing: 1.5,
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        borderBottom: 1,
+        borderColor: '#f3f4f6',
+        paddingBottom: 5
     },
     carGrid: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        gap: 22
     },
     carItem: {
-        fontSize: 11,
+        fontSize: 7.7, // text-[11px]
         color: '#4b5563',
         fontWeight: 700,
-        marginBottom: 2,
+        marginBottom: 2.8, // space-y-1
         textTransform: 'uppercase'
     },
     carBoldValue: {
         color: '#000',
         fontWeight: 900
     },
+    // Table Header: mx-8 (22)
     tableHeader: {
         flexDirection: 'row',
-        marginHorizontal: 32,
+        marginHorizontal: 22,
         borderBottom: 2,
         borderColor: '#000',
-        paddingBottom: 4,
+        paddingBottom: 5.6, // pb-2 (8px * 0.7)
         marginBottom: 0,
         fontWeight: 900,
-        fontSize: 11,
+        fontSize: 7.7, // text-[11px]
         letterSpacing: 1.5,
         textTransform: 'uppercase',
         color: '#1a1a1a'
@@ -210,42 +216,43 @@ const styles = StyleSheet.create({
     col4: { width: '25%', textAlign: 'right' },
     tableRow: {
         flexDirection: 'row',
-        marginHorizontal: 32,
-        paddingVertical: 10,
+        marginHorizontal: 22,
+        paddingVertical: 14, // py-5 (20px * 0.7)
         borderBottom: 1,
         borderColor: '#f3f4f6',
         alignItems: 'flex-start'
     },
     rowNo: {
-        fontSize: 13,
+        fontSize: 9.1, // text-[13px]
         fontWeight: 900,
         color: '#d1d5db',
         width: '8.33%'
     },
     itemTitle: {
-        fontSize: 14,
+        fontSize: 9.8, // text-[14px]
         fontWeight: 900,
         textTransform: 'uppercase',
         color: '#000',
-        lineHeight: 1.1
+        lineHeight: 1.1,
+        letterSpacing: -0.3 // tracking-tight
     },
     itemSub: {
-        fontSize: 10,
+        fontSize: 7, // text-[10px]
         color: '#9ca3af',
-        marginTop: 2,
+        marginTop: 4, // mt-1.5
         fontWeight: 700,
         textTransform: 'uppercase',
-        opacity: 0.7
+        opacity: 0.8
     },
     rowPrice: {
-        fontSize: 15,
+        fontSize: 10.5, // text-[15px]
         fontWeight: 900,
         color: '#111827',
         textAlign: 'right',
         width: '25%'
     },
     rowAmount: {
-        fontSize: 15,
+        fontSize: 10.5, // text-[15px]
         fontWeight: 900,
         color: '#000',
         textAlign: 'right',
@@ -253,154 +260,147 @@ const styles = StyleSheet.create({
     },
     totalsSection: {
         alignItems: 'flex-end',
-        marginHorizontal: 32,
-        marginTop: 12,
-        marginBottom: 16,
-        paddingTop: 12,
+        marginHorizontal: 22,
+        marginTop: 17, // pt-6
+        marginBottom: 33, // mb-12
+        paddingTop: 17,
         borderTop: 1,
-        borderTopColor: '#f3f4f6'
+        borderColor: '#f3f4f6'
     },
     totalRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: 256,
+        width: 179, // w-64 (256px * 0.7)
         backgroundColor: '#f9fafb',
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderRadius: 12,
-        marginBottom: 8
+        paddingHorizontal: 11, // p-4 (16px * 0.7)
+        paddingVertical: 11,
+        borderRadius: 8, // rounded-xl (use 8 for pdf)
+        marginBottom: 11
     },
     totalLabel: {
-        fontSize: 14,
+        fontSize: 9.8, // text-sm
         fontWeight: 900,
         textTransform: 'uppercase',
         color: '#9ca3af',
         letterSpacing: 1.5
     },
     totalValue: {
-        fontSize: 30,
+        fontSize: 21, // text-3xl (30px * 0.7)
         fontWeight: 900,
         color: '#000',
-        letterSpacing: -1.5
+        letterSpacing: -1
     },
     amountWordsHeader: {
-        fontSize: 10,
+        fontSize: 7, // text-[10px]
         color: '#9ca3af',
         fontWeight: 900,
         textTransform: 'uppercase',
         textAlign: 'right',
-        letterSpacing: 1,
-        marginBottom: 1
+        letterSpacing: 1.5,
+        marginBottom: 2.8
     },
     amountWords: {
-        fontSize: 11,
+        fontSize: 7.7, // text-[11px]
         fontWeight: 900,
         textAlign: 'right',
         fontStyle: 'italic',
         color: '#111827',
-        maxWidth: 320,
+        maxWidth: 224, // max-w-md (448px * 0.7 approx 313, reduced for safety)
         textTransform: 'uppercase',
         lineHeight: 1.2
     },
     metaRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 32,
-        marginTop: 4,
-        marginBottom: 16,
-        alignItems: 'flex-end'
+        marginHorizontal: 22,
+        marginBottom: 33, // mb-12
+        alignItems: 'flex-end',
+        gap: 22
     },
     notesSection: {
-        width: '50%'
+        width: '60%' // space-y-4
     },
     notesBox: {
-        backgroundColor: '#f0f9ff',
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 12,
+        backgroundColor: 'rgba(14, 165, 233, 0.04)',
+        padding: 8.4, // p-3
+        borderRadius: 8, // rounded-xl
         borderWidth: 1,
-        borderColor: '#e0f2fe',
-        marginBottom: 8
+        borderColor: 'rgba(14, 165, 233, 0.08)',
+        marginBottom: 11 // space-y-4
     },
     termsSection: {
-        backgroundColor: '#f9fafb',
-        paddingHorizontal: 12,
-        paddingVertical: 12,
-        borderRadius: 12,
+        backgroundColor: 'rgba(249, 250, 251, 0.6)',
+        padding: 11, // p-4
+        borderRadius: 8,
         borderWidth: 1,
         borderColor: '#f3f4f6'
     },
     termsHeader: {
-        fontSize: 10,
+        fontSize: 7, // text-[10px]
         fontWeight: 900,
-        marginBottom: 4,
+        marginBottom: 5.6, // mb-2
         textTransform: 'uppercase',
         color: '#111827',
-        letterSpacing: 1
+        letterSpacing: 1.5
     },
     termItem: {
         flexDirection: 'row',
         marginBottom: 2
     },
     termIdx: {
-        fontSize: 8,
+        fontSize: 5.6, // text-[8px]
         fontWeight: 900,
         color: '#d1d5db',
-        marginRight: 6
+        marginRight: 5.6
     },
     termText: {
-        fontSize: 8,
+        fontSize: 5.6, // text-[8px]
         color: '#6b7280',
         fontWeight: 700,
         textTransform: 'uppercase'
     },
     authSection: {
-        width: '40%',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end'
+        paddingTop: 11,
+        alignItems: 'flex-end'
     },
     authLabel: {
-        fontSize: 12,
+        fontSize: 8.4, // text-[12px]
         fontWeight: 900,
-        marginBottom: 32,
+        marginBottom: 33, // mb-12
         textTransform: 'uppercase',
-        color: '#1a110d'
+        color: '#111827'
     },
     authLine: {
-        width: 192,
+        width: 134, // w-48 (192px * 0.7)
         height: 1,
-        backgroundColor: '#e5e7eb'
+        backgroundColor: '#d1d5db'
     },
     authSub: {
-        fontSize: 10,
+        fontSize: 7, // text-[10px]
         color: '#9ca3af',
         fontWeight: 900,
-        marginTop: 8,
+        marginTop: 5.6,
         textTransform: 'uppercase',
         letterSpacing: 1.5
     },
     footer: {
         marginTop: 'auto',
-        marginHorizontal: 32,
-        marginBottom: 12,
+        marginHorizontal: 22,
+        marginBottom: 22, // mb-8
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingTop: 8,
-        borderTopWidth: 1,
-        borderTopColor: '#f9fafb'
+        alignItems: 'center'
     },
     footerText: {
-        fontSize: 10,
+        fontSize: 7, // text-[10px]
         color: '#d1d5db',
         fontWeight: 900,
         textTransform: 'uppercase',
         letterSpacing: 1.5
     },
     footerCompany: {
-        color: '#1a1a1a',
-        opacity: 0.2
+        color: 'rgba(0,0,0,0.2)'
     }
 });
 
@@ -428,19 +428,30 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
 
                 {/* Branding */}
                 <View style={styles.brandingRow}>
-                    <View style={styles.companySection}>
-                        <Image src="/logo.png" style={styles.logo} />
-                        <View style={styles.companyInfo}>
-                            <Text style={styles.companyName}>Seva Auto Sales</Text>
-                            <Text style={styles.companyTagline}>PROFESSIONAL VEHICLE MODIFICATIONS</Text>
-                            <Text style={styles.companyDetails}>
-                                Side Car For Two Wheeler Scooter & Bike, Four Wheel Attachment For Handicap, Auto Clutch & Hand Operate Kit of Four Wheels Cars
-                            </Text>
-                            <View style={{ marginTop: 8, borderTop: 1, borderColor: '#f3f4f6', paddingTop: 8 }}>
+                    <View style={{ flex: 1 }}>
+                        {/* Logo + Title Row */}
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>
+                            <View style={{ width: 56, height: 56, marginRight: 11, alignItems: 'center', justifyContent: 'center' }}>
+                                <Image src="/logo.png" style={{ width: 56, height: 56, objectFit: 'contain' }} />
+                            </View>
+                            <View>
+                                <Text style={styles.companyName}>Seva Auto Sales</Text>
+                                <Text style={styles.companyTagline}>Professional Vehicle Modifications</Text>
+                            </View>
+                        </View>
+
+                        {/* Details Block - Now below the logo row, matching Preview structure */}
+                        <View>
+                            <View style={{ marginBottom: 6 }}>
+                                <Text style={styles.companyDetails}>
+                                    Side Car For Two Wheeler Scooter & Bike, Four Wheel Attachment For Handicap, Auto Clutch & Hand Operate Kit of Four Wheels Cars
+                                </Text>
+                            </View>
+                            <View style={{ paddingTop: 6, borderTop: 1, borderColor: '#f3f4f6' }}>
                                 <Text style={styles.addressDetails}>
                                     <Text style={{ opacity: 0.4 }}>Work: </Text>Street No. 14, Ghanshyam Nagar Soc., Opp. New Shaktivijay, L.H. Road, SURAT.
                                 </Text>
-                                <View style={{ flexDirection: 'row', marginTop: 2, gap: 16 }}>
+                                <View style={{ flexDirection: 'row', marginTop: 2, gap: 11 }}>
                                     <Text style={styles.addressDetails}>
                                         <Text style={{ opacity: 0.4 }}>Email: </Text>sevaautosales@gmail.com
                                     </Text>
@@ -451,9 +462,11 @@ export const InvoicePDF = ({ data }: InvoicePDFProps) => {
                             </View>
                         </View>
                     </View>
+
+                    {/* Right Side Contact */}
                     <View style={styles.contactSection}>
                         <Text style={styles.contactText}>Mo. 99043 66000</Text>
-                        <Text style={styles.contactText}>94271 00629</Text>
+                        <Text style={styles.contactText}>99136 55204</Text>
                     </View>
                     <Text style={styles.estLabel}>Est. 2005</Text>
                 </View>
